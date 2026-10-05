@@ -74,11 +74,12 @@
         #pdf-render-container {
             position: absolute;
             left: -9999px;
-            top: -9999px;
+            top: 0;
             width: 750px;
             background: #ffffff;
             z-index: -1;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
             box-sizing: border-box;
         }
@@ -785,19 +786,16 @@
 
     <!-- OFF-SCREEN RENDER CONTAINER FOR PDF EXPORT -->
     <div id="pdf-render-container">
-        <div id="pdf-template" style="padding: 12px 18px; background: white; color: black; font-family: 'Times New Roman', serif; width: 720px; margin: 0; box-sizing: border-box; text-align: left; page-break-inside: avoid; break-inside: avoid;">
+        <div id="pdf-template" style="padding: 14px 18px; background: #ffffff; color: #000000; font-family: 'Times New Roman', Times, serif; width: 720px; margin: 0; box-sizing: border-box; text-align: left; page-break-inside: avoid; break-inside: avoid;">
             
-            <!-- Kop Surat Resmi Dengan Logo SVG Vector Safe (Bebas Masalah CORS) -->
-            <div style="border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 8px; display: flex; items-center: center; justify-content: space-between; gap: 10px;">
-                <!-- Vector Logo Left Side -->
-                <div style="width: 52px; height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background-color: #0d47a1; border-radius: 50%; color: white; margin-left: 2px;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                    </svg>
+            <!-- Kop Surat Resmi Menggunakan Gambar logoypt2.png -->
+            <div style="border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #ffffff;">
+                <!-- Logo Left Side dengan logoypt2.png -->
+                <div style="width: 55px; height: 55px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                    <img id="pdf-logo-img" src="logoypt2.png" crossorigin="anonymous" alt="Logo SMK YPT 2 Purbalingga" style="max-height: 100%; max-width: 100%; object-fit: contain;" onerror="this.onerror=null; this.src='https://placehold.co/120x120/0d47a1/ffffff?text=YPT+2';">
                 </div>
                 <!-- Header Text Center -->
-                <div style="flex-grow: 1; text-align: center;">
+                <div style="flex-grow: 1; text-align: center; color: #000000;">
                     <div style="font-size: 10pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">YAYASAN PENDIDIKAN TEKNOLOGI PURBALINGGA</div>
                     <div style="font-size: 13.5pt; font-weight: bold; color: #0d47a1; margin: 1px 0;">SMK YPT 2 PURBALINGGA</div>
                     <div style="font-size: 8pt; font-weight: bold;">TERAKREDITASI "A" (UNGGUL & BERKARAKTER)</div>
@@ -1142,7 +1140,7 @@
         function downloadGeneratedPDF(studentData = null) {
             const data = studentData || currentStudentData;
             if (!data) {
-                alert('Data pendaftar tidak ditemukan.');
+                showNotification('Data pendaftar tidak ditemukan.');
                 return;
             }
 
@@ -1156,22 +1154,29 @@
             let originalBtnHtml = '';
             if (btn) {
                 originalBtnHtml = btn.innerHTML;
-                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Mengunduh File PDF...`;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Membuat File PDF...`;
                 btn.disabled = true;
             }
 
-            // Align render container strictly at top-left (0,0) without negative transform shift
-            container.style.position = 'fixed';
+            // Save current scroll position
+            const savedScrollY = window.scrollY;
+
+            // Temporarily scroll to top so html2canvas renders coordinates accurately without empty offsets
+            window.scrollTo(0, 0);
+
+            // Stage render container at page origin (0,0) with high z-index and explicit white background
+            container.style.position = 'absolute';
             container.style.left = '0px';
             container.style.top = '0px';
-            container.style.transform = 'none';
             container.style.opacity = '1';
-            container.style.zIndex = '99999';
+            container.style.visibility = 'visible';
+            container.style.zIndex = '999999';
+            container.style.background = '#ffffff';
 
-            const safeFileName = `SPMB_SMKYPT2_${data.noReg}_${data.field_1_nama.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+            const safeFileName = `SPMB_SMKYPT2_${data.noReg}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
             const opt = {
-                margin:       [4, 4, 4, 4],
+                margin:       [8, 8, 8, 8],
                 filename:     safeFileName,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
@@ -1183,19 +1188,19 @@
                     scrollY: 0,
                     x: 0,
                     y: 0,
-                    windowWidth: 720
+                    windowWidth: 800
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            // Small delay to ensure complete DOM paint before canvas snapshot
+            // Delay screenshot slightly to ensure full DOM paint & logo image render
             setTimeout(() => {
                 if (typeof html2pdf !== 'undefined') {
                     html2pdf().set(opt).from(element).save().then(() => {
                         resetPdfContainer();
                     }).catch(err => {
-                        console.warn('html2pdf capture error, falling back to window.print():', err);
+                        console.warn('html2pdf capture error, falling back to print window:', err);
                         resetPdfContainer();
                         window.print();
                     });
@@ -1203,15 +1208,19 @@
                     resetPdfContainer();
                     window.print();
                 }
-            }, 300);
+            }, 450);
 
             function resetPdfContainer() {
                 container.style.position = 'absolute';
                 container.style.left = '-9999px';
-                container.style.transform = 'none';
-                container.style.top = '-9999px';
+                container.style.top = '0px';
                 container.style.opacity = '0';
+                container.style.visibility = 'hidden';
                 container.style.zIndex = '-1';
+                
+                // Restore original user scroll position
+                window.scrollTo(0, savedScrollY);
+
                 if (btn) {
                     btn.innerHTML = originalBtnHtml;
                     btn.disabled = false;
