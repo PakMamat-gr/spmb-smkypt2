@@ -69,34 +69,38 @@
             border-color: #1a73e8;
             box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
         }
-        /* Custom Printable PDF styling */
-        #pdf-template {
-            display: none;
-            background: white;
-            padding: 30px;
-            width: 800px;
-            font-family: 'Times New Roman', Times, serif;
-            color: #000;
+
+        /* Printable PDF Template container styling */
+        #pdf-render-container {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 750px;
+            background: #ffffff;
+            z-index: -1;
+            opacity: 0;
+            pointer-events: none;
+            box-sizing: border-box;
         }
-        .pdf-header {
-            border-bottom: 3px double #000;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #pdf-template, #pdf-template * {
+                visibility: visible !important;
+            }
+            #pdf-template {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 15px !important;
+                display: block !important;
+            }
         }
-        .pdf-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11pt;
-        }
-        .pdf-table td, .pdf-table th {
-            border: 1px solid #666;
-            padding: 5px 8px;
-            vertical-align: top;
-        }
-        .pdf-table th {
-            background-color: #f2f2f2;
-            text-align: left;
-        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -116,79 +120,13 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Google Sites Header Style Banner -->
+    <!-- Header Banner -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 flex justify-between items-center h-16">
             <div class="flex items-center space-x-3">
-                <!-- Logo SMK YPT 2 Purbalingga -->
-                <div class="w-10 h-12 flex items-center justify-center shrink-0">
-                    <img src="logo svg.svg" alt="Logo SMK YPT 2 Purbalingga" class="w-full h-full object-contain" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='block';">
-                    <svg viewBox="360 360 360 360" class="w-full h-full drop-shadow-sm hidden">
-                        <!-- Shield Background -->
-                        <path d="M 20,50 Q 150,22 280,50 C 275,190 235,295 150,340 C 65,295 25,190 20,50 Z" fill="#c0d7eb" stroke="#000000" stroke-width="5" stroke-linejoin="round"/>
-                        
-                        <!-- Top Arc Text: YAYASAN PENDIDIKAN TEKNOLOGI -->
-                        <path id="text-path-top-hdr" d="M 30,72 Q 150,28 270,72" fill="none"/>
-                        <text font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="12.5" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-top-hdr" startOffset="50%">YAYASAN PENDIDIKAN TEKNOLOGI</textPath>
-                        </text>
-
-                        <!-- Header Text: SMK YPT 2 -->
-                        <path id="text-path-title-hdr" d="M 45,112 Q 150,72 255,112" fill="none"/>
-                        <text font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="23" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-title-hdr" startOffset="50%">SMK YPT 2</textPath>
-                        </text>
-
-                        <!-- Left Wing (Dark Indigo with Feather Tips) -->
-                        <path d="M 138,218 C 120,212 90,195 55,230 C 48,208 46,190 52,178 L 38,176 C 45,162 52,154 58,148 L 42,148 C 52,132 62,124 68,120 C 80,132 92,155 112,142 C 96,162 88,185 62,200 C 82,185 102,172 122,165 C 106,188 94,210 72,223 C 98,212 122,198 135,185 Z" fill="#1c0f5e" stroke="#000000" stroke-width="1.2"/>
-
-                        <!-- Right Wing (Dark Indigo with Feather Tips) -->
-                        <path d="M 162,218 C 180,212 210,195 245,230 C 252,208 254,190 248,178 L 262,176 C 255,162 248,154 242,148 L 258,148 C 248,132 238,124 232,120 C 220,132 208,155 188,142 C 204,162 212,185 238,200 C 218,185 198,172 178,165 C 194,188 206,210 228,223 C 202,212 178,198 165,185 Z" fill="#1c0f5e" stroke="#000000" stroke-width="1.2"/>
-
-                        <!-- Yellow Horns / Support Brackets -->
-                        <path d="M 124,212 Q 118,188 133,178 Q 128,198 138,214 Z" fill="#ffdc00" stroke="#000000" stroke-width="1.2"/>
-                        <path d="M 176,212 Q 182,188 167,178 Q 172,198 162,214 Z" fill="#ffdc00" stroke="#000000" stroke-width="1.2"/>
-
-                        <!-- Red Steering Wheel Outer Ring -->
-                        <circle cx="150" cy="170" r="36" fill="#ff0000" stroke="#000000" stroke-width="2.5"/>
-                        <circle cx="150" cy="170" r="23" fill="#000000" stroke="#000000" stroke-width="1.5"/>
-
-                        <!-- Black Gear Teeth Inside Wheel -->
-                        <g fill="#000000">
-                            <rect x="144" y="142" width="12" height="6" rx="1"/>
-                            <rect x="144" y="192" width="12" height="6" rx="1"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(60 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(120 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(240 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(300 150 170)"/>
-                        </g>
-
-                        <!-- Inner Wheel Center Hole -->
-                        <circle cx="150" cy="170" r="17" fill="#c0d7eb" stroke="#000000" stroke-width="1.5"/>
-
-                        <!-- Steering Wheel 3 Red Spokes -->
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1" transform="rotate(120 150 170)"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1" transform="rotate(240 150 170)"/>
-
-                        <!-- Hub Center Dot -->
-                        <circle cx="150" cy="170" r="11" fill="#000000"/>
-                        <circle cx="150" cy="170" r="6" fill="#c0d7eb" stroke="#ff0000" stroke-width="1.5"/>
-
-                        <!-- Open Book -->
-                        <g stroke="#000000" stroke-width="2" stroke-linejoin="round">
-                            <polygon points="98,214 150,224 202,214 212,228 150,240 88,228" fill="#ffdc00"/>
-                            <polygon points="100,212 150,222 150,236 92,225" fill="#ffffff"/>
-                            <polygon points="200,212 150,222 150,236 208,225" fill="#ffffff"/>
-                            <line x1="150" y1="222" x2="150" y2="240" stroke="#000000" stroke-width="2"/>
-                        </g>
-
-                        <!-- Bottom Arc Text: PURBALINGGA -->
-                        <path id="text-path-bottom-hdr" d="M 45,248 Q 150,305 255,248" fill="none"/>
-                        <text font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="18" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-bottom-hdr" startOffset="50%">PURBALINGGA</textPath>
-                        </text>
-                    </svg>
+                <!-- Official Logo PNG SMK YPT 2 Purbalingga -->
+                <div class="w-12 h-12 flex items-center justify-center shrink-0">
+                    <img src="logoypt2.png" alt="Logo SMK YPT 2 Purbalingga" class="max-h-full max-w-full object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='https://placehold.co/120x120/0d47a1/ffffff?text=YPT+2';">
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-gray-800 leading-tight">SPMB SMK YPT 2 Purbalingga</h1>
@@ -209,7 +147,7 @@
                 </button>
             </nav>
 
-            <!-- Mobile menu icon -->
+            <!-- Mobile Menu Toggle Button -->
             <div class="md:hidden flex items-center">
                 <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-gray-600 p-2 focus:outline-none">
                     <i class="fas fa-bars text-xl"></i>
@@ -217,7 +155,7 @@
             </div>
         </div>
 
-        <!-- Mobile Nav Menu -->
+        <!-- Mobile Navigation Drawer -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-4 space-y-2">
             <button onclick="switchTab('form-tab'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-google-blue bg-google-light">
                 <i class="fas fa-file-signature mr-2"></i>Formulir Pendaftaran
@@ -231,57 +169,15 @@
         </div>
     </header>
 
-    <!-- Google Sites Visual Banner Header -->
+    <!-- Visual Banner Header -->
     <div class="bg-gradient-to-r from-ypt-blue via-blue-700 to-indigo-800 text-white shadow-inner py-8 px-4 sm:px-6">
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-4 text-center md:text-left">
-                <!-- Image/Emblem in Banner -->
-                <div class="w-16 h-20 bg-white/10 p-1.5 rounded-xl border border-white/20 shrink-0 hidden sm:block">
-                    <img src="logo svg.svg" alt="Logo SMK YPT 2 Purbalingga" class="w-full h-full object-contain" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='block';">
-                    <svg viewBox="360 360 300 360" class="w-full h-full drop-shadow hidden">
-                        <path d="M 20,50 Q 150,22 280,50 C 275,190 235,295 150,340 C 65,295 25,190 20,50 Z" fill="#c0d7eb" stroke="#000000" stroke-width="5" stroke-linejoin="round"/>
-                        <path id="text-path-top-bnr" d="M 30,72 Q 150,28 270,72" fill="none"/>
-                        <text font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="12.5" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-top-bnr" startOffset="50%">YAYASAN PENDIDIKAN TEKNOLOGI</textPath>
-                        </text>
-                        <path id="text-path-title-bnr" d="M 45,112 Q 150,72 255,112" fill="none"/>
-                        <text font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="23" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-title-bnr" startOffset="50%">SMK YPT 2</textPath>
-                        </text>
-                        <path d="M 138,218 C 120,212 90,195 55,230 C 48,208 46,190 52,178 L 38,176 C 45,162 52,154 58,148 L 42,148 C 52,132 62,124 68,120 C 80,132 92,155 112,142 C 96,162 88,185 62,200 C 82,185 102,172 122,165 C 106,188 94,210 72,223 C 98,212 122,198 135,185 Z" fill="#1c0f5e" stroke="#000000" stroke-width="1.2"/>
-                        <path d="M 162,218 C 180,212 210,195 245,230 C 252,208 254,190 248,178 L 262,176 C 255,162 248,154 242,148 L 258,148 C 248,132 238,124 232,120 C 220,132 208,155 188,142 C 204,162 212,185 238,200 C 218,185 198,172 178,165 C 194,188 206,210 228,223 C 202,212 178,198 165,185 Z" fill="#1c0f5e" stroke="#000000" stroke-width="1.2"/>
-                        <path d="M 124,212 Q 118,188 133,178 Q 128,198 138,214 Z" fill="#ffdc00" stroke="#000000" stroke-width="1.2"/>
-                        <path d="M 176,212 Q 182,188 167,178 Q 172,198 162,214 Z" fill="#ffdc00" stroke="#000000" stroke-width="1.2"/>
-                        <circle cx="150" cy="170" r="36" fill="#ff0000" stroke="#000000" stroke-width="2.5"/>
-                        <circle cx="150" cy="170" r="23" fill="#000000" stroke="#000000" stroke-width="1.5"/>
-                        <g fill="#000000">
-                            <rect x="144" y="142" width="12" height="6" rx="1"/>
-                            <rect x="144" y="192" width="12" height="6" rx="1"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(60 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(120 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(240 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(300 150 170)"/>
-                        </g>
-                        <circle cx="150" cy="170" r="17" fill="#c0d7eb" stroke="#000000" stroke-width="1.5"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1" transform="rotate(120 150 170)"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1" transform="rotate(240 150 170)"/>
-                        <circle cx="150" cy="170" r="11" fill="#000000"/>
-                        <circle cx="150" cy="170" r="6" fill="#c0d7eb" stroke="#ff0000" stroke-width="1.5"/>
-                        <g stroke="#000000" stroke-width="2" stroke-linejoin="round">
-                            <polygon points="98,214 150,224 202,214 212,228 150,240 88,228" fill="#ffdc00"/>
-                            <polygon points="100,212 150,222 150,236 92,225" fill="#ffffff"/>
-                            <polygon points="200,212 150,222 150,236 208,225" fill="#ffffff"/>
-                            <line x1="150" y1="222" x2="150" y2="240" stroke="#000000" stroke-width="2"/>
-                        </g>
-                        <path id="text-path-bottom-bnr" d="M 45,248 Q 150,305 255,248" fill="none"/>
-                        <text font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="18" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-bottom-bnr" startOffset="50%">PURBALINGGA</textPath>
-                        </text>
-                    </svg>
+                <div class="w-16 h-16 bg-white rounded-2xl p-1 flex items-center justify-center shadow-lg shrink-0">
+                    <img src="logoypt2.png" alt="Logo SMK YPT 2 Purbalingga" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.src='https://placehold.co/150x150/0d47a1/ffffff?text=YPT+2';">
                 </div>
                 <div>
-                    <div class="inline-block bg-amber-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                    <div class="inline-block bg-amber-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
                         Tahun Ajaran 2027/2028
                     </div>
                     <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Penerimaan Murid Baru (SPMB)</h2>
@@ -310,11 +206,11 @@
                 <div class="google-card p-6 border-t-8 border-google-blue">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Formulir Pendaftaran Siswa Baru</h2>
                     <p class="text-sm text-gray-600 leading-relaxed">
-                        Isilah data calon peserta didik baru dengan teliti dan benar. Setelah mengirimkan data, bukti pendaftaran dapat langsung diunduh dalam format <b>PDF</b> dan nomor pendaftaran otomatis tergenerasi sesuai dengan jurusan utama pilihan Anda.
+                        Isilah data calon peserta didik baru dengan teliti dan benar. Setelah mengirimkan data, bukti pendaftaran dapat langsung diunduh dalam format <b>PDF</b> dan nomor pendaftaran otomatis tergenerasi sesuai dengan jurusan utama pilihan Anda (Contoh: <b>TKR-001, TSM-001, TAV-001, TJKT-001, DKV-001</b>).
                     </p>
                     <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800 flex items-center">
                         <i class="fas fa-info-circle text-blue-600 text-base mr-2.5 flex-shrink-0"></i>
-                        <span>Pastikan Nomor WhatsApp aktif agar panitia dapat menghubungi Anda untuk verifikasi berkas.</span>
+                        <span>Pastikan Nomor WhatsApp aktif agar panitia SPMB dapat menghubungi Anda untuk verifikasi berkas.</span>
                     </div>
                 </div>
 
@@ -363,7 +259,7 @@
                             <input type="text" id="field_3_tempat_lahir" required placeholder="Contoh: Purbalingga" class="input-google">
                         </div>
 
-                        <!-- Tanggal Lahir (Widget Kalender) -->
+                        <!-- Tanggal Lahir -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Lahir <span class="text-red-500">*</span></label>
                             <input type="date" id="field_4_tgl_lahir" required class="input-google">
@@ -381,7 +277,7 @@
                             <input type="text" maxlength="16" pattern="[0-9]{16}" id="field_7_no_kk" required placeholder="3303xxxxxxxxxxxx" class="input-google">
                         </div>
 
-                        <!-- Nomor Telepon/HP (Whatsapp Aktif) -->
+                        <!-- Nomor Telepon/HP -->
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Nomor Telepon/HP Siswa (WhatsApp) <span class="text-red-500">*</span></label>
                             <input type="tel" id="field_6_hp_siswa" required placeholder="08xxxxxxxxxx" class="input-google">
@@ -389,7 +285,7 @@
 
                         <!-- Alamat Lengkap -->
                         <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <label class="block text-sm font-semibold text-gray-800 mb-2">Alamat Lengkap <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-800 mb-2">Alamat Lengkap Tempat Tinggal <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 <div>
                                     <label class="text-xs text-gray-600 block mb-1">RT / RW</label>
@@ -439,9 +335,22 @@
                         </div>
 
                         <!-- Pekerjaan Ayah -->
-                        <div class="md:col-span-2">
+                        <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Pekerjaan Ayah <span class="text-red-500">*</span></label>
                             <input type="text" id="field_11_pekerjaan_ayah" required placeholder="Wiraswasta, Buruh, PNS, Petani, dll." class="input-google">
+                        </div>
+
+                        <!-- Penghasilan Ayah -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Penghasilan Ayah / Bulan <span class="text-red-500">*</span></label>
+                            <select id="field_11b_penghasilan_ayah" required class="input-google bg-white">
+                                <option value="">-- Pilih Penghasilan Ayah --</option>
+                                <option value="Kurang dari Rp 1.000.000">&lt; Rp 1.000.000</option>
+                                <option value="Rp 1.000.000 - Rp 3.000.000">Rp 1.000.000 - Rp 3.000.000</option>
+                                <option value="Rp 3.000.001 - Rp 5.000.000">Rp 3.000.001 - Rp 5.000.000</option>
+                                <option value="Lebih dari Rp 5.000.000">&gt; Rp 5.000.000</option>
+                                <option value="Tidak Berpenghasilan">Tidak Berpenghasilan</option>
+                            </select>
                         </div>
 
                         <!-- Nama Ibu -->
@@ -462,8 +371,21 @@
                             <input type="text" id="field_14_pekerjaan_ibu" required placeholder="Ibu Rumah Tangga, Pedagang, dll." class="input-google">
                         </div>
 
-                        <!-- Nomor Telepon/HP Orang Tua/Wali -->
+                        <!-- Penghasilan Ibu -->
                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Penghasilan Ibu / Bulan <span class="text-red-500">*</span></label>
+                            <select id="field_14b_penghasilan_ibu" required class="input-google bg-white">
+                                <option value="">-- Pilih Penghasilan Ibu --</option>
+                                <option value="Kurang dari Rp 1.000.000">&lt; Rp 1.000.000</option>
+                                <option value="Rp 1.000.000 - Rp 3.000.000">Rp 1.000.000 - Rp 3.000.000</option>
+                                <option value="Rp 3.000.001 - Rp 5.000.000">Rp 3.000.001 - Rp 5.000.000</option>
+                                <option value="Lebih dari Rp 5.000.000">&gt; Rp 5.000.000</option>
+                                <option value="Tidak Berpenghasilan">Tidak Berpenghasilan</option>
+                            </select>
+                        </div>
+
+                        <!-- Nomor Telepon/HP Orang Tua/Wali -->
+                        <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">No. Telepon/WA Orang Tua/Wali <span class="text-red-500">*</span></label>
                             <input type="tel" id="field_30_hp_ortu" required placeholder="08xxxxxxxxxx" class="input-google">
                         </div>
@@ -476,7 +398,7 @@
                         <div class="w-8 h-8 rounded-full bg-blue-100 text-google-blue flex items-center justify-center font-bold">
                             <i class="fas fa-graduation-cap text-sm"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-800">Pendidikan & Kartu Pemerintah</h3>
+                        <h3 class="text-lg font-bold text-gray-800">Pendidikan & Kartu Bantuan</h3>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -515,7 +437,7 @@
 
                         <!-- Kartu dari Pemerintah -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Kartu Pemerintah (Centang jika punya)</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Kartu Pemerintah (Centang jika ada)</label>
                             <div class="space-y-2 bg-gray-50 p-3 rounded-md border border-gray-200 text-sm">
                                 <label class="flex items-center space-x-2 cursor-pointer">
                                     <input type="checkbox" value="KIP" class="kartu-gov rounded text-google-blue focus:ring-google-blue">
@@ -552,7 +474,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 Pilihan Jurusan Utama <span class="text-red-500">*</span>
-                                <span class="text-xs font-normal text-gray-500 block">Nomor pendaftaran akan dibuat otomatis berdasarkan Jurusan Utama ini.</span>
+                                <span class="text-xs font-normal text-blue-600 block">Nomor pendaftaran otomatis sesuai kode jurusan pilihan Anda (TKR-001, TSM-001, TAV-001, TJKT-001, DKV-001 dst.)</span>
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label class="border-2 border-gray-200 rounded-lg p-3 flex items-center space-x-3 cursor-pointer hover:border-google-blue hover:bg-blue-50/50 transition">
@@ -595,7 +517,7 @@
 
                         <!-- Sumber Informasi -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Sumber Informasi SMK YPT 2 Purbalingga (Bisa pilih lebih dari satu)</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Sumber Informasi SMK YPT 2 Purbalingga</label>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm">
                                 <label class="flex items-center space-x-2"><input type="checkbox" value="Facebook" class="sumber-info rounded text-google-blue"> <span>Facebook</span></label>
                                 <label class="flex items-center space-x-2"><input type="checkbox" value="Instagram" class="sumber-info rounded text-google-blue"> <span>Instagram</span></label>
@@ -687,10 +609,10 @@
                         <!-- Riwayat Penyakit -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Riwayat Penyakit (Jika ada)</label>
-                            <input type="text" id="field_27_penyakit" placeholder="Isi 'Tidak ada' jika tidak memiliki riwayat sakit kronis" class="input-google">
+                            <input type="text" id="field_27_penyakit" placeholder="Isi 'Tidak ada' jika tidak ada riwayat sakit kronis" class="input-google">
                         </div>
 
-                        <!-- Prestasi yang Dimiliki -->
+                        <!-- Prestasi -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Prestasi yang Dimiliki</label>
                             <input type="text" id="field_28_prestasi" placeholder="Contoh: Juara 2 FLS2N Tingkat Kabupaten / Tidak ada" class="input-google">
@@ -739,17 +661,16 @@
                     </div>
                 </div>
 
-                <!-- CONFIGURATION FOR GOOGLE SHEET WEBHOOK -->
+                <!-- GOOGLE SHEET WEBHOOK -->
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-5 text-xs text-gray-700">
                     <div class="font-bold text-gray-800 mb-1 flex items-center">
                         <i class="fab fa-google-drive text-emerald-600 text-base mr-2"></i>
-                        Google Apps Script Webhook URL (Opsional Direct Google Sheets Sync)
+                        Google Apps Script Webhook URL (Direct Google Sheets Sync)
                     </div>
                     <div class="flex gap-2 mt-2">
                         <input type="url" id="sheet_webhook_url" placeholder="https://script.google.com/macros/s/.../exec" class="input-google text-xs flex-grow bg-white">
                         <button onclick="saveWebhookUrl()" class="px-4 py-1.5 bg-google-blue text-white rounded font-medium">Simpan URL</button>
                     </div>
-                    <p class="mt-1 text-gray-500">Jika diisi, setiap data yang diinputkan pendaftar akan otomatis terposting langsung ke Spreadsheet Google Drive Anda.</p>
                 </div>
 
                 <!-- TABLE SEARCH & FILTER -->
@@ -804,11 +725,11 @@
                             <i class="fas fa-graduation-cap mr-2"></i>Kompetensi Keahlian (Jurusan)
                         </h3>
                         <ul class="list-disc list-inside space-y-1.5 text-xs text-gray-600">
-                            <li><b>TKR</b> - Teknik Kendaraan Ringan (Otomotif Mobil)</li>
-                            <li><b>TSM</b> - Teknik Sepeda Motor (Otomotif Sepeda Motor)</li>
-                            <li><b>TAV</b> - Teknik Audio Video (Elektronika Digital)</li>
+                            <li><b>TKR</b> - Teknik Kendaraan Ringan</li>
+                            <li><b>TSM</b> - Teknik Sepeda Motor</li>
+                            <li><b>TAV</b> - Teknik Audio Video</li>
                             <li><b>TJKT</b> - Teknik Jaringan Komputer & Telekomunikasi</li>
-                            <li><b>DKV</b> - Desain Komunikasi Visual (Multimedia)</li>
+                            <li><b>DKV</b> - Desain Komunikasi Visual</li>
                         </ul>
                     </div>
 
@@ -823,15 +744,6 @@
                         </ol>
                     </div>
                 </div>
-
-                <div class="mt-6 border-t pt-4">
-                    <h3 class="font-bold text-gray-800 text-sm mb-2">Kontak Panitia SPMB:</h3>
-                    <div class="flex flex-wrap gap-4 text-xs text-gray-600">
-                        <span class="flex items-center"><i class="fab fa-whatsapp text-emerald-600 mr-2 text-base"></i> 0812-3456-7890</span>
-                        <span class="flex items-center"><i class="fas fa-phone text-google-blue mr-2"></i> (0281) 891234</span>
-                        <span class="flex items-center"><i class="fas fa-globe text-indigo-600 mr-2"></i> smkypt2purbalingga.sch.id</span>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -844,156 +756,152 @@
                 <i class="fas fa-check-circle"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-800 mb-1">Pendaftaran Berhasil!</h3>
-            <p class="text-xs text-gray-500 mb-4">Data pendaftar telah tersimpan ke database spreadsheet.</p>
+            <p class="text-xs text-gray-500 mb-4">Data pendaftar telah berhasil tersimpan ke sistem.</p>
 
             <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-left">
-                <div class="text-xs text-blue-600 font-bold uppercase tracking-wider">Nomor Pendaftaran Anda:</div>
+                <div class="text-xs text-blue-600 font-bold uppercase tracking-wider">Nomor Registrasi Pendaftaran:</div>
                 <div id="modal-reg-code" class="text-3xl font-extrabold text-google-blue mt-1 font-mono tracking-tight">TKR-001</div>
                 <div id="modal-student-name" class="text-sm font-semibold text-gray-800 mt-2">Ahmad Fauzi</div>
                 <div id="modal-student-school" class="text-xs text-gray-500">SMPN 1 Purbalingga</div>
             </div>
 
             <div class="space-y-2">
-                <button onclick="downloadGeneratedPDF()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow flex items-center justify-center space-x-2">
+                <button id="btn-download-pdf-modal" onclick="downloadGeneratedPDF()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow flex items-center justify-center space-x-2 transition">
                     <i class="fas fa-file-pdf text-lg"></i>
-                    <span>Download / Cetak PDF Pendaftaran</span>
+                    <span>Download PDF Bukti Pendaftaran</span>
                 </button>
 
-                <button onclick="closeSuccessModal()" class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl text-xs">
+                <button onclick="printDirectly()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-2 transition">
+                    <i class="fas fa-print"></i>
+                    <span>Cetak / Simpan via Print Browser</span>
+                </button>
+
+                <button onclick="closeSuccessModal()" class="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl text-xs">
                     Tutup & Kembali
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- HIDDEN HTML TEMPLATE FOR PDF GENERATION -->
-    <div id="pdf-template-wrapper" class="hidden">
-        <div id="pdf-template" style="padding: 25px; background: white; color: black; font-family: 'Times New Roman', serif;">
-            <!-- Kop Surat with Official Logo -->
-            <div style="display: flex; align-items: center; border-bottom: 3px double #000; padding-bottom: 8px; margin-bottom: 12px;">
-                <div style="width: 70px; height: 80px; text-align: center; margin-right: 15px;">
-                    <img src="logo svg_2.jpg" alt="Logo SMK YPT 2 Purbalingga" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 300 360" style="width: 100%; height: 100%; display: none;">
-                        <path d="M 20,50 Q 150,22 280,50 C 275,190 235,295 150,340 C 65,295 25,190 20,50 Z" fill="#c0d7eb" stroke="#000000" stroke-width="5" stroke-linejoin="round"/>
-                        <path id="text-path-top-pdf" d="M 30,72 Q 150,28 270,72" fill="none"/>
-                        <text font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="12.5" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-top-pdf" startOffset="50%">YAYASAN PENDIDIKAN TEKNOLOGI</textPath>
-                        </text>
-                        <path id="text-path-title-pdf" d="M 45,112 Q 150,72 255,112" fill="none"/>
-                        <text font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="23" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-title-pdf" startOffset="50%">SMK YPT 2</textPath>
-                        </text>
-                        <path d="M 138,218 C 120,212 90,195 55,230 C 48,208 46,190 52,178 L 38,176 C 45,162 52,154 58,148 L 42,148 C 52,132 62,124 68,120 C 80,132 92,155 112,142 C 96,162 88,185 62,200 C 82,185 102,172 122,165 C 106,188 94,210 72,223 C 98,212 122,198 135,185 Z" fill="#1c0f5e" stroke="#000000" stroke-width="1.2"/>
-                        <path d="M 162,218 C 180,212 210,195 245,230 C 252,208 254,190 248,178 L 262,176 C 255,162 248,154 242,148 L 258,148 C 248,132 238,124 232,120 C 220,132 208,155 188,142 C 204,162 212,185 238,200 C 218,185 198,172 178,165 C 194,188 206,210 228,223 C 202,212 178,198 165,185 Z" fill="#1c0f5e" stroke="#000000" stroke-width="1.2"/>
-                        <path d="M 124,212 Q 118,188 133,178 Q 128,198 138,214 Z" fill="#ffdc00" stroke="#000000" stroke-width="1.2"/>
-                        <path d="M 176,212 Q 182,188 167,178 Q 172,198 162,214 Z" fill="#ffdc00" stroke="#000000" stroke-width="1.2"/>
-                        <circle cx="150" cy="170" r="36" fill="#ff0000" stroke="#000000" stroke-width="2.5"/>
-                        <circle cx="150" cy="170" r="23" fill="#000000" stroke="#000000" stroke-width="1.5"/>
-                        <g fill="#000000">
-                            <rect x="144" y="142" width="12" height="6" rx="1"/>
-                            <rect x="144" y="192" width="12" height="6" rx="1"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(60 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(120 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(240 150 170)"/>
-                            <rect x="144" y="142" width="12" height="6" rx="1" transform="rotate(300 150 170)"/>
-                        </g>
-                        <circle cx="150" cy="170" r="17" fill="#c0d7eb" stroke="#000000" stroke-width="1.5"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1" transform="rotate(120 150 170)"/>
-                        <rect x="145" y="134" width="10" height="19" fill="#ff0000" stroke="#000000" stroke-width="1" transform="rotate(240 150 170)"/>
-                        <circle cx="150" cy="170" r="11" fill="#000000"/>
-                        <circle cx="150" cy="170" r="6" fill="#c0d7eb" stroke="#ff0000" stroke-width="1.5"/>
-                        <g stroke="#000000" stroke-width="2" stroke-linejoin="round">
-                            <polygon points="98,214 150,224 202,214 212,228 150,240 88,228" fill="#ffdc00"/>
-                            <polygon points="100,212 150,222 150,236 92,225" fill="#ffffff"/>
-                            <polygon points="200,212 150,222 150,236 208,225" fill="#ffffff"/>
-                            <line x1="150" y1="222" x2="150" y2="240" stroke="#000000" stroke-width="2"/>
-                        </g>
-                        <path id="text-path-bottom-pdf" d="M 45,248 Q 150,305 255,248" fill="none"/>
-                        <text font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="18" fill="#000000" text-anchor="middle">
-                            <textPath href="#text-path-bottom-pdf" startOffset="50%">PURBALINGGA</textPath>
-                        </text>
+    <!-- OFF-SCREEN RENDER CONTAINER FOR PDF EXPORT -->
+    <div id="pdf-render-container">
+        <div id="pdf-template" style="padding: 12px 18px; background: white; color: black; font-family: 'Times New Roman', serif; width: 720px; margin: 0; box-sizing: border-box; text-align: left; page-break-inside: avoid; break-inside: avoid;">
+            
+            <!-- Kop Surat Resmi Dengan Logo SVG Vector Safe (Bebas Masalah CORS) -->
+            <div style="border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 8px; display: flex; items-center: center; justify-content: space-between; gap: 10px;">
+                <!-- Vector Logo Left Side -->
+                <div style="width: 52px; height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background-color: #0d47a1; border-radius: 50%; color: white; margin-left: 2px;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
                     </svg>
                 </div>
+                <!-- Header Text Center -->
                 <div style="flex-grow: 1; text-align: center;">
-                    <div style="font-size: 11pt; font-weight: bold;">YAYASAN PENDIDIKAN TEKNOLOGI PURBALINGGA</div>
-                    <div style="font-size: 14pt; font-weight: bold; color: #000;">SMK YPT 2 PURBALINGGA</div>
-                    <div style="font-size: 9pt; font-weight: bold;">AKREDITASI "A" - TERKAPAL & TERUJI</div>
-                    <div style="font-size: 8pt; font-style: italic;">Jl. Mayjend Sungkono KM 3, Selaganggeng, Mrebet, Purbalingga, Jawa Tengah</div>
+                    <div style="font-size: 10pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">YAYASAN PENDIDIKAN TEKNOLOGI PURBALINGGA</div>
+                    <div style="font-size: 13.5pt; font-weight: bold; color: #0d47a1; margin: 1px 0;">SMK YPT 2 PURBALINGGA</div>
+                    <div style="font-size: 8pt; font-weight: bold;">TERAKREDITASI "A" (UNGGUL & BERKARAKTER)</div>
+                    <div style="font-size: 7.5pt; font-style: italic; color: #333; margin-top: 1px;">
+                        Jl. Mayjend Sungkono KM 3, Purbalingga, Jawa Tengah | Telp: (0281) 891234
+                    </div>
                 </div>
             </div>
 
-            <div style="text-align: center; margin-bottom: 15px;">
-                <h3 style="margin: 0; font-size: 13pt; text-decoration: underline; font-weight: bold;">BUKTI PENDAFTARAN SPMB TAHUN AJARAN 2027/2028</h3>
-                <div style="font-size: 10pt; font-weight: bold; margin-top: 4px;">NO. REGISTRASI: <span id="pdf-code" style="color: #0d47a1; font-size: 12pt;">-</span></div>
+            <!-- Header Bukti Pendaftaran -->
+            <div style="text-align: center; margin-bottom: 6px;">
+                <h3 style="margin: 0; font-size: 11pt; text-decoration: underline; font-weight: bold; text-transform: uppercase;">
+                    BUKTI PENDAFTARAN PESERTA DIDIK BARU (SPMB)
+                </h3>
+                <div style="font-size: 8.5pt; font-weight: bold; margin-top: 2px;">
+                    TAHUN AJARAN 2027/2028
+                </div>
+                <div style="display: inline-block; border: 1.5px solid #0d47a1; background-color: #e8f0fe; padding: 2px 12px; margin-top: 4px; border-radius: 4px;">
+                    <span style="font-size: 8pt; font-weight: bold; color: #333;">NO. REGISTRASI: </span>
+                    <span id="pdf-code" style="color: #0d47a1; font-size: 11.5pt; font-weight: bold; font-family: monospace;">-</span>
+                </div>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; font-size: 9.5pt; margin-bottom: 15px;" border="1" cellpadding="4">
+            <!-- Tabel Detail Hasil Inputan -->
+            <table style="width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 6px;" border="1" cellpadding="2.5">
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 8px; font-size: 10pt;">A. DATA DIRI CALON SISWA</th>
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                        A. DATA DIRI CALON SISWA
+                    </th>
                 </tr>
-                <tr><td style="width: 35%;">Nama Lengkap</td><td id="pdf-1" style="font-weight: bold;">-</td></tr>
+                <tr><td style="width: 36%;">Nama Lengkap</td><td id="pdf-1" style="font-weight: bold;">-</td></tr>
                 <tr><td>Jenis Kelamin</td><td id="pdf-2">-</td></tr>
                 <tr><td>Tempat, Tanggal Lahir</td><td id="pdf-3-4">-</td></tr>
-                <tr><td>Alamat Lengkap</td><td id="pdf-5">-</td></tr>
-                <tr><td>No. WA Siswa</td><td id="pdf-6">-</td></tr>
-                <tr><td>No. Kartu Keluarga (KK)</td><td id="pdf-7">-</td></tr>
                 <tr><td>NIK Pendaftar</td><td id="pdf-8">-</td></tr>
+                <tr><td>No. Kartu Keluarga (KK)</td><td id="pdf-7">-</td></tr>
                 <tr><td>Agama</td><td id="pdf-15">-</td></tr>
+                <tr><td>No. Telepon / WA Siswa</td><td id="pdf-6">-</td></tr>
+                <tr><td>Alamat Lengkap</td><td id="pdf-5">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 8px; font-size: 10pt;">B. DATA ORANG TUA / WALI</th>
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                        B. DATA ORANG TUA / WALI
+                    </th>
                 </tr>
-                <tr><td>Nama Ayah / NIK</td><td id="pdf-9-10">-</td></tr>
-                <tr><td>Pekerjaan Ayah</td><td id="pdf-11">-</td></tr>
-                <tr><td>Nama Ibu / NIK</td><td id="pdf-12-13">-</td></tr>
-                <tr><td>Pekerjaan Ibu</td><td id="pdf-14">-</td></tr>
+                <tr><td>Nama Ayah Kandung & NIK</td><td id="pdf-9-10">-</td></tr>
+                <tr><td>Pekerjaan & Penghasilan Ayah</td><td id="pdf-11">-</td></tr>
+                <tr><td>Nama Ibu Kandung & NIK</td><td id="pdf-12-13">-</td></tr>
+                <tr><td>Pekerjaan & Penghasilan Ibu</td><td id="pdf-14">-</td></tr>
                 <tr><td>No. HP/WA Orang Tua</td><td id="pdf-30">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 8px; font-size: 10pt;">C. AKADEMIK & PILIHAN JURUSAN</th>
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                        C. AKADEMIK & JURUSAN PILIHAN
+                    </th>
                 </tr>
                 <tr><td>Asal Sekolah SMP/MTs</td><td id="pdf-16" style="font-weight: bold;">-</td></tr>
                 <tr><td>Tahun Lulus</td><td id="pdf-17">-</td></tr>
-                <tr><td>Kartu dari Pemerintah</td><td id="pdf-18">-</td></tr>
-                <tr><td>Pilihan Jurusan Utama</td><td id="pdf-19" style="font-weight: bold; color: #0d47a1;">-</td></tr>
-                <tr><td>Sumber Informasi SPMB</td><td id="pdf-20">-</td></tr>
+                <tr><td>Kartu Bantuan Pemerintah</td><td id="pdf-18">-</td></tr>
+                <tr><td>Pilihan Jurusan Utama</td><td id="pdf-19" style="font-weight: bold; color: #0d47a1; font-size: 8.5pt;">-</td></tr>
+                <tr><td>Sumber Informasi</td><td id="pdf-20">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 8px; font-size: 10pt;">D. DATA FISIK, GEOGRAFIS & KESEHATAN</th>
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                        D. DATA FISIK, KESEHATAN & PRESTASI
+                    </th>
                 </tr>
-                <tr><td>Fisik Siswa (TB/BB/Kepala/Sepatu)</td><td id="pdf-21-24">-</td></tr>
+                <tr><td>Ukuran Fisik Siswa</td><td id="pdf-21-24">-</td></tr>
                 <tr><td>Jarak & Waktu Tempuh</td><td id="pdf-25-26">-</td></tr>
                 <tr><td>Riwayat Penyakit</td><td id="pdf-27">-</td></tr>
-                <tr><td>Prestasi Dimiliki</td><td id="pdf-28">-</td></tr>
+                <tr><td>Prestasi yang Dimiliki</td><td id="pdf-28">-</td></tr>
                 <tr><td>Cita-Cita</td><td id="pdf-29">-</td></tr>
             </table>
 
-            <!-- Signatures area -->
-            <div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 9.5pt;">
-                <div style="text-align: center; width: 40%;">
+            <!-- Catatan Verifikasi -->
+            <div style="font-size: 7.5pt; color: #333; border: 1px dashed #666; padding: 4px 6px; margin-bottom: 6px; line-height: 1.2;">
+                <b>Petunjuk Verifikasi Pendaftaran:</b> Silakan cetak bukti pendaftaran ini dan serahkan ke Panitia SPMB SMK YPT 2 Purbalingga beserta lampiran fotocopy KK, Akta Kelahiran, dan Ijazah/SKL SMP untuk proses daftar ulang.
+            </div>
+
+            <!-- Tanda Tangan Validation Area (Siswa & Panitia SPMB) -->
+            <div style="display: flex; justify-content: space-between; font-size: 8.5pt; margin-top: 4px; page-break-inside: avoid; break-inside: avoid;">
+                <div style="text-align: center; width: 42%;">
                     <div>Mengetahui,</div>
-                    <div>Orang Tua / Wali Siswa</div>
-                    <div style="height: 50px;"></div>
+                    <div style="font-weight: bold;">Panitia SPMB SMK YPT 2</div>
+                    <div style="height: 38px;"></div>
                     <div>( ......................................... )</div>
                 </div>
 
-                <div style="text-align: center; width: 40%;">
+                <div style="text-align: center; width: 45%;">
                     <div>Purbalingga, <span id="pdf-date-now"></span></div>
-                    <div>Calon Peserta Didik Baru</div>
-                    <div style="height: 50px;"></div>
-                    <div id="pdf-signature-name" style="font-weight: bold;">( ......................................... )</div>
+                    <div style="font-weight: bold;">Calon Peserta Didik Baru</div>
+                    <div style="height: 38px;"></div>
+                    <div id="pdf-signature-name" style="font-weight: bold; text-decoration: underline;">( ......................................... )</div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
-        // Global variables & local DB counter initialized
+        // Global variables & Database counter initialized
         let currentStudentData = null;
         let studentsDatabase = JSON.parse(localStorage.getItem('spmb_students_db')) || [];
         
-        // Registration counter map per jurusan
+        // Counter register per jurusan (TKR-001, TSM-001, TAV-001, TJKT-001, DKV-001)
         let regCounters = JSON.parse(localStorage.getItem('spmb_counters')) || {
             TKR: 1,
             TSM: 1,
@@ -1004,7 +912,6 @@
 
         window.onload = function() {
             renderTable();
-            // Restore saved webhook URL if available
             const savedWebhook = localStorage.getItem('spmb_webhook_url');
             if (savedWebhook) {
                 document.getElementById('sheet_webhook_url').value = savedWebhook;
@@ -1033,7 +940,7 @@
             menu.classList.toggle('hidden');
         }
 
-        // Custom school input handler
+        // Custom school selection handler
         function toggleSekolahLainnya() {
             const select = document.getElementById('field_16_asal_sekolah_select');
             const customInput = document.getElementById('field_16_sekolah_custom');
@@ -1046,7 +953,7 @@
             }
         }
 
-        // Checkbox none logic
+        // Card None Checkbox
         function toggleKartuNone(checkbox) {
             if (checkbox.checked) {
                 document.querySelectorAll('.kartu-gov').forEach(cb => {
@@ -1055,14 +962,13 @@
             }
         }
 
-        // Save Webhook URL
+        // Webhook URL save
         function saveWebhookUrl() {
             const url = document.getElementById('sheet_webhook_url').value.trim();
             localStorage.setItem('spmb_webhook_url', url);
             showNotification('URL Webhook Google Sheets berhasil disimpan!');
         }
 
-        // Notification Helper
         function showNotification(msg) {
             const toast = document.createElement('div');
             toast.className = 'fixed bottom-5 right-5 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-xl text-xs z-50 flex items-center space-x-2';
@@ -1071,7 +977,7 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Form Submission Logic
+        // Form Submission Handler
         function handleFormSubmit(e) {
             e.preventDefault();
 
@@ -1083,11 +989,11 @@
             }
             const jurusan = jurusanRadio.value;
 
-            // Generate Registration Number (TKR-001, TSM-002, TJKT-001, etc.)
+            // Generate Kode Registrasi sesuai Jurusan
             const currentNum = regCounters[jurusan] || 1;
             const regCode = `${jurusan}-${String(currentNum).padStart(3, '0')}`;
 
-            // Increment counter for next pendaftar
+            // Increment counter untuk pendaftar jurusan berikutnya
             regCounters[jurusan] = currentNum + 1;
             localStorage.setItem('spmb_counters', JSON.stringify(regCounters));
 
@@ -1096,7 +1002,7 @@
             const sekolahCustom = document.getElementById('field_16_sekolah_custom').value;
             const asalSekolah = sekolahSelect === 'Lainnya' ? sekolahCustom : sekolahSelect;
 
-            // Extract Kartu Pemerintah
+            // Extract Kartu Bantuan
             const kartuGovList = [];
             document.querySelectorAll('.kartu-gov:checked').forEach(cb => kartuGovList.push(cb.value));
             const kartuGovStr = kartuGovList.length > 0 ? kartuGovList.join(', ') : 'Tidak Memiliki';
@@ -1108,7 +1014,7 @@
             if (infoLainnya) infoList.push(infoLainnya);
             const sumberInfoStr = infoList.length > 0 ? infoList.join(', ') : 'Lainnya';
 
-            // Construct Complete 30 Fields Object
+            // Construct Full Student Object
             const student = {
                 noReg: regCode,
                 timestamp: new Date().toLocaleString('id-ID'),
@@ -1127,9 +1033,11 @@
                 field_9_nama_ayah: document.getElementById('field_9_nama_ayah').value.trim(),
                 field_10_nik_ayah: document.getElementById('field_10_nik_ayah').value.trim(),
                 field_11_pekerjaan_ayah: document.getElementById('field_11_pekerjaan_ayah').value.trim(),
+                field_11b_penghasilan_ayah: document.getElementById('field_11b_penghasilan_ayah').value,
                 field_12_nama_ibu: document.getElementById('field_12_nama_ibu').value.trim(),
                 field_13_nik_ibu: document.getElementById('field_13_nik_ibu').value.trim(),
                 field_14_pekerjaan_ibu: document.getElementById('field_14_pekerjaan_ibu').value.trim(),
+                field_14b_penghasilan_ibu: document.getElementById('field_14b_penghasilan_ibu').value,
                 field_15_agama: document.getElementById('field_15_agama').value,
                 field_16_asal_sekolah: asalSekolah,
                 field_17_tahun_lulus: document.getElementById('field_17_tahun_lulus').value,
@@ -1148,22 +1056,20 @@
                 field_30_hp_ortu: document.getElementById('field_30_hp_ortu').value.trim()
             };
 
-            // Save to local spreadsheet database array
+            // Save to Database
             studentsDatabase.unshift(student);
             localStorage.setItem('spmb_students_db', JSON.stringify(studentsDatabase));
 
-            // Set current for PDF generation
             currentStudentData = student;
 
-            // Attempt webhook push to Google Sheets if configured
+            // Optional Webhook Sync
             postToGoogleSheets(student);
 
-            // Update UI elements
             renderTable();
             openSuccessModal(student);
         }
 
-        // Send to Google Sheets Webhook if URL present
+        // Post Data to Google Sheets Webhook
         function postToGoogleSheets(studentData) {
             const webhookUrl = localStorage.getItem('spmb_webhook_url');
             if (!webhookUrl) return;
@@ -1173,12 +1079,10 @@
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(studentData)
-            }).then(() => {
-                console.log('Posted to Google Sheet Webhook');
-            }).catch(err => console.error('Sheet posting error:', err));
+            }).catch(err => console.error('Sheet sync error:', err));
         }
 
-        // Success Modal Controls
+        // Modal Controls
         function openSuccessModal(student) {
             document.getElementById('modal-reg-code').innerText = student.noReg;
             document.getElementById('modal-student-name').innerText = student.field_1_nama;
@@ -1192,7 +1096,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Populate PDF Template
+        // Populate PDF Printable Element with form inputs
         function preparePDFData(data) {
             document.getElementById('pdf-code').innerText = data.noReg;
             document.getElementById('pdf-1').innerText = data.field_1_nama;
@@ -1205,9 +1109,9 @@
             document.getElementById('pdf-15').innerText = data.field_15_agama;
 
             document.getElementById('pdf-9-10').innerText = `${data.field_9_nama_ayah} (NIK: ${data.field_10_nik_ayah})`;
-            document.getElementById('pdf-11').innerText = data.field_11_pekerjaan_ayah;
+            document.getElementById('pdf-11').innerText = `${data.field_11_pekerjaan_ayah} (Penghasilan: ${data.field_11b_penghasilan_ayah || '-'})`;
             document.getElementById('pdf-12-13').innerText = `${data.field_12_nama_ibu} (NIK: ${data.field_13_nik_ibu})`;
-            document.getElementById('pdf-14').innerText = data.field_14_pekerjaan_ibu;
+            document.getElementById('pdf-14').innerText = `${data.field_14_pekerjaan_ibu} (Penghasilan: ${data.field_14b_penghasilan_ibu || '-'})`;
             document.getElementById('pdf-30').innerText = data.field_30_hp_ortu;
 
             document.getElementById('pdf-16').innerText = data.field_16_asal_sekolah;
@@ -1216,8 +1120,8 @@
             document.getElementById('pdf-19').innerText = `${data.field_19_jurusan} (SMK YPT 2 Purbalingga)`;
             document.getElementById('pdf-20').innerText = data.field_20_sumber_info;
 
-            document.getElementById('pdf-21-24').innerText = `TB: ${data.field_21_tinggi} cm | BB: ${data.field_22_berat} kg | Lingkar Kepala: ${data.field_23_lingkar_kepala} cm | Ukuran Sepatu: ${data.field_24_ukuran_sepatu}`;
-            document.getElementById('pdf-25-26').innerText = `Jarak: ${data.field_25_jarak} KM | Waktu Tempuh: ${data.field_26_waktu} Menit`;
+            document.getElementById('pdf-21-24').innerText = `Tinggi: ${data.field_21_tinggi} cm | Berat: ${data.field_22_berat} kg | Lingkar Kepala: ${data.field_23_lingkar_kepala} cm | Sepatu: ${data.field_24_ukuran_sepatu}`;
+            document.getElementById('pdf-25-26').innerText = `Jarak: ${data.field_25_jarak} KM | Waktu: ${data.field_26_waktu} Menit`;
             document.getElementById('pdf-27').innerText = data.field_27_penyakit;
             document.getElementById('pdf-28').innerText = data.field_28_prestasi;
             document.getElementById('pdf-29').innerText = data.field_29_cita_cita;
@@ -1226,31 +1130,96 @@
             document.getElementById('pdf-signature-name').innerText = `( ${data.field_1_nama} )`;
         }
 
-        // Download Generated PDF using html2pdf.js
-        function downloadGeneratedPDF(studentData = null) {
+        // Direct Browser Print Fallback
+        function printDirectly(studentData = null) {
             const data = studentData || currentStudentData;
             if (!data) return;
-
             preparePDFData(data);
-
-            const element = document.getElementById('pdf-template');
-            const wrapper = document.getElementById('pdf-template-wrapper');
-            wrapper.classList.remove('hidden');
-
-            const opt = {
-                margin:       10,
-                filename:     `SPMB_SMKYPT2_${data.noReg}_${data.field_1_nama.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                wrapper.classList.add('hidden');
-            });
+            window.print();
         }
 
-        // Render Database Table
+        // Export PDF Execution Handler with html2pdf
+        function downloadGeneratedPDF(studentData = null) {
+            const data = studentData || currentStudentData;
+            if (!data) {
+                alert('Data pendaftar tidak ditemukan.');
+                return;
+            }
+
+            // Fill all values inside template
+            preparePDFData(data);
+
+            const container = document.getElementById('pdf-render-container');
+            const element = document.getElementById('pdf-template');
+            const btn = document.getElementById('btn-download-pdf-modal');
+            
+            let originalBtnHtml = '';
+            if (btn) {
+                originalBtnHtml = btn.innerHTML;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Mengunduh File PDF...`;
+                btn.disabled = true;
+            }
+
+            // Align render container strictly at top-left (0,0) without negative transform shift
+            container.style.position = 'fixed';
+            container.style.left = '0px';
+            container.style.top = '0px';
+            container.style.transform = 'none';
+            container.style.opacity = '1';
+            container.style.zIndex = '99999';
+
+            const safeFileName = `SPMB_SMKYPT2_${data.noReg}_${data.field_1_nama.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+
+            const opt = {
+                margin:       [4, 4, 4, 4],
+                filename:     safeFileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    allowTaint: true,
+                    logging: false, 
+                    scrollX: 0, 
+                    scrollY: 0,
+                    x: 0,
+                    y: 0,
+                    windowWidth: 720
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            // Small delay to ensure complete DOM paint before canvas snapshot
+            setTimeout(() => {
+                if (typeof html2pdf !== 'undefined') {
+                    html2pdf().set(opt).from(element).save().then(() => {
+                        resetPdfContainer();
+                    }).catch(err => {
+                        console.warn('html2pdf capture error, falling back to window.print():', err);
+                        resetPdfContainer();
+                        window.print();
+                    });
+                } else {
+                    resetPdfContainer();
+                    window.print();
+                }
+            }, 300);
+
+            function resetPdfContainer() {
+                container.style.position = 'absolute';
+                container.style.left = '-9999px';
+                container.style.transform = 'none';
+                container.style.top = '-9999px';
+                container.style.opacity = '0';
+                container.style.zIndex = '-1';
+                if (btn) {
+                    btn.innerHTML = originalBtnHtml;
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        // Render Student Database Table
         function renderTable() {
             const tbody = document.getElementById('student-table-body');
             const emptyState = document.getElementById('empty-state');
@@ -1276,7 +1245,7 @@
                     const tr = document.createElement('tr');
                     tr.className = 'hover:bg-blue-50/50 transition';
                     tr.innerHTML = `
-                        <td class="px-3 py-2.5 font-bold text-google-blue border-r">${item.noReg}</td>
+                        <td class="px-3 py-2.5 font-bold text-google-blue border-r font-mono">${item.noReg}</td>
                         <td class="px-3 py-2.5 font-semibold text-gray-800 border-r">${item.field_1_nama}</td>
                         <td class="px-3 py-2.5 border-r">${item.field_2_jk}</td>
                         <td class="px-3 py-2.5 border-r font-bold">${item.field_19_jurusan}</td>
@@ -1284,8 +1253,8 @@
                         <td class="px-3 py-2.5 border-r">${item.field_6_hp_siswa}</td>
                         <td class="px-3 py-2.5 border-r font-mono text-xs">${item.field_8_nik}</td>
                         <td class="px-3 py-2.5 text-center">
-                            <button onclick="downloadPDFByIndex(${index})" title="Download PDF" class="px-2 py-1 bg-google-blue text-white rounded text-xs hover:bg-google-hover">
-                                <i class="fas fa-file-pdf"></i> PDF
+                            <button onclick="downloadPDFByIndex(${index})" title="Export PDF" class="px-2.5 py-1 bg-google-blue text-white rounded text-xs hover:bg-google-hover transition font-medium">
+                                <i class="fas fa-file-pdf mr-1"></i> PDF
                             </button>
                         </td>
                     `;
@@ -1298,7 +1267,7 @@
             downloadGeneratedPDF(studentsDatabase[index]);
         }
 
-        // Export Database to CSV/Spreadsheet File
+        // Export CSV Database
         function exportToCSV() {
             if (studentsDatabase.length === 0) {
                 alert('Belum ada data pendaftar untuk di-export!');
@@ -1306,10 +1275,10 @@
             }
 
             const headers = [
-                "No Pendaftaran", "Tanggal Input", "Nama Lengkap", "Jenis Kelamin", "Tempat Lahir", "Tanggal Lahir",
+                "No Registrasi", "Tanggal Input", "Nama Lengkap", "Jenis Kelamin", "Tempat Lahir", "Tanggal Lahir",
                 "RT/RW", "Desa", "Kecamatan", "Kota", "Provinsi", "No WA Siswa", "No KK", "NIK Pendaftar",
-                "Nama Ayah", "NIK Ayah", "Pekerjaan Ayah", "Nama Ibu", "NIK Ibu", "Pekerjaan Ibu", "Agama",
-                "Asal Sekolah", "Tahun Lulus", "Kartu Government", "Pilihan Jurusan", "Sumber Info",
+                "Nama Ayah", "NIK Ayah", "Pekerjaan Ayah", "Penghasilan Ayah", "Nama Ibu", "NIK Ibu", "Pekerjaan Ibu", "Penghasilan Ibu", "Agama",
+                "Asal Sekolah", "Tahun Lulus", "Kartu Bantuan", "Pilihan Jurusan", "Sumber Info",
                 "Tinggi Badan (cm)", "Berat Badan (kg)", "Lingkar Kepala (cm)", "Ukuran Sepatu",
                 "Jarak Tempuh (km)", "Waktu Tempuh (min)", "Riwayat Penyakit", "Prestasi", "Cita-Cita", "No WA Ortu"
             ];
@@ -1318,8 +1287,8 @@
                 `"${s.noReg}"`, `"${s.timestamp}"`, `"${s.field_1_nama}"`, `"${s.field_2_jk}"`, `"${s.field_3_tempat_lahir}"`, `"${s.field_4_tgl_lahir}"`,
                 `"${s.field_5_rtrw}"`, `"${s.field_5_desa}"`, `"${s.field_5_kecamatan}"`, `"${s.field_5_kota}"`, `"${s.field_5_provinsi}"`,
                 `"${s.field_6_hp_siswa}"`, `"${s.field_7_no_kk}"`, `"${s.field_8_nik}"`,
-                `"${s.field_9_nama_ayah}"`, `"${s.field_10_nik_ayah}"`, `"${s.field_11_pekerjaan_ayah}"`,
-                `"${s.field_12_nama_ibu}"`, `"${s.field_13_nik_ibu}"`, `"${s.field_14_pekerjaan_ibu}"`,
+                `"${s.field_9_nama_ayah}"`, `"${s.field_10_nik_ayah}"`, `"${s.field_11_pekerjaan_ayah}"`, `"${s.field_11b_penghasilan_ayah || '-'}"`,
+                `"${s.field_12_nama_ibu}"`, `"${s.field_13_nik_ibu}"`, `"${s.field_14_pekerjaan_ibu}"`, `"${s.field_14b_penghasilan_ibu || '-'}"`,
                 `"${s.field_15_agama}"`, `"${s.field_16_asal_sekolah}"`, `"${s.field_17_tahun_lulus}"`,
                 `"${s.field_18_kartu_pemerintah}"`, `"${s.field_19_jurusan}"`, `"${s.field_20_sumber_info}"`,
                 `"${s.field_21_tinggi}"`, `"${s.field_22_berat}"`, `"${s.field_23_lingkar_kepala}"`, `"${s.field_24_ukuran_sepatu}"`,
@@ -1336,9 +1305,9 @@
             document.body.removeChild(link);
         }
 
-        // Clear Database
+        // Clear Local Database
         function clearAllData() {
-            if (confirm('Apakah Anda yakin ingin menghapus semua data pendaftar dari spreadsheet lokal?')) {
+            if (confirm('Apakah Anda yakin ingin menghapus semua data pendaftar dari database lokal?')) {
                 studentsDatabase = [];
                 localStorage.removeItem('spmb_students_db');
                 renderTable();
