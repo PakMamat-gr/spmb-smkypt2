@@ -1445,9 +1445,11 @@ function doPost(e) {
             
             const tempContainer = document.createElement('div');
             tempContainer.style.position = 'absolute';
-            tempContainer.style.left = '0'; 
-            tempContainer.style.top = window.scrollY + 'px'; 
+            tempContainer.style.left = '0px'; 
+            tempContainer.style.top = '0px'; // Gunakan 0px agar mulai dari ujung atas
             tempContainer.style.width = '780px';
+            tempContainer.style.margin = '0';
+            tempContainer.style.padding = '20px'; // Beri sedikit padding agar tidak menempel di tepi
             tempContainer.style.backgroundColor = '#ffffff';
             tempContainer.style.zIndex = '-9999';
             
@@ -1456,19 +1458,25 @@ function doPost(e) {
 
             const safeFileName = `SPMB_SMKYPT2_${data.noReg || 'REG'}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
-            const opt = {
-                margin:       [8, 8, 8, 8],
-                filename:     safeFileName,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true, 
-                    allowTaint: true,
-                    logging: false, 
-                    windowWidth: 800
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+           const opt = {
+              margin:       0.5, // Margin PDF
+              filename:     'Bukti_Pendaftaran.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { 
+                scale: 2, 
+                scrollX: 0, // Mencegah terpotong akibat scroll horizontal
+                scrollY: 0, // Mencegah terpotong akibat scroll vertikal
+                windowWidth: 800 // Memaksa lebar canvas pembacaan
+              },
+              jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
+
+            // Pastikan memanggilnya sambil scroll ke paling atas terlebih dahulu (opsional namun disarankan)
+window.scrollTo(0, 0); 
+
+html2pdf().set(opt).from(tempContainer).save().then(() => {
+    document.body.removeChild(tempContainer);
+});
 
             // 3. Generate and trigger direct file download
             if (typeof html2pdf !== 'undefined') {
