@@ -1444,9 +1444,9 @@ function doPost(e) {
             clone.style.opacity = '1';
             
             const tempContainer = document.createElement('div');
-            tempContainer.style.position = 'fixed';
-            tempContainer.style.left = '-9999px'; 
-            tempContainer.style.top = '0';
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '0'; 
+            tempContainer.style.top = window.scrollY + 'px'; 
             tempContainer.style.width = '780px';
             tempContainer.style.backgroundColor = '#ffffff';
             tempContainer.style.zIndex = '-9999';
