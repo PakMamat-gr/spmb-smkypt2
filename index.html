@@ -1415,94 +1415,287 @@ function doPost(e) {
             window.print();
         }
 
-       // EXPORT PDF DIRECTLY TO DOWNLOAD FILE WITHOUT OPENING PRINTER DIALOG
-function downloadGeneratedPDF(studentData = null) {
-    const data = studentData || currentStudentData;
-    if (!data) {
-        showToast('Data pendaftar tidak ditemukan.', 'warning');
-        return;
-    }
+        // EXPORT PDF DIRECTLY TO DOWNLOAD FILE WITHOUT OPENING PRINTER DIALOG
+        function downloadGeneratedPDF(studentData = null) {
+            const data = studentData || currentStudentData;
+            if (!data) {
+                showToast('Data pendaftar tidak ditemukan.', 'warning');
+                return;
+            }
 
-    // 1. Isi data ke elemen template PDF
-    preparePDFData(data);
+            // 1. Fill data into PDF elements
+            preparePDFData(data);
 
-    const btn = document.getElementById('btn-download-pdf-modal');
-    let originalBtnHtml = '';
-    if (btn) {
-        originalBtnHtml = btn.innerHTML;
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Membuat File PDF...`;
-        btn.disabled = true;
-    }
+            const btn = document.getElementById('btn-download-pdf-modal');
+            let originalBtnHtml = '';
+            if (btn) {
+                originalBtnHtml = btn.innerHTML;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Membuat File PDF...`;
+                btn.disabled = true;
+            }
 
-    // 2. Clone PDF template
-    const element = document.getElementById('pdf-template');
-    const clone = element.cloneNode(true);
-    
-    // Format tampilan clone agar presisi sesuai ukuran A4
-    clone.style.display = 'block';
-    clone.style.visibility = 'visible';
-    clone.style.opacity = '1';
-    clone.style.margin = '0 auto';
-    clone.style.padding = '14px 18px';
-    clone.style.width = '750px';
-    clone.style.boxSizing = 'border-box';
+            // 2. Clone PDF template for clean offscreen rendering
+            const element = document.getElementById('pdf-template');
+            const clone = element.cloneNode(true);
+            
+            // Ensure clone is fully visible in canvas renderer
+            clone.style.display = 'block';
+            clone.style.visibility = 'visible';
+            clone.style.opacity = '1';
+            
+            const tempContainer = document.createElement('div');
+tempContainer.style.position = 'absolute';
+tempContainer.style.left = '0'; 
+tempContainer.style.top = window.scrollY + 'px'; 
+tempContainer.style.width = '780px';
+tempContainer.style.backgroundColor = '#ffffff';
+tempContainer.style.zIndex = '-9999';
+            
+            tempContainer.appendChild(clone);
+            document.body.appendChild(tempContainer);
 
-    // 3. Tampilkan Overlay Loading singkat
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:99999; display:flex; justify-content:center; align-items:center;';
-    overlay.innerHTML = `<div style="background:#ffffff; padding:20px 30px; border-radius:12px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.2); font-family:sans-serif;"><i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-2"></i><div style="font-weight:bold; color:#333; font-size:14px; margin-top:8px;">Memproses File PDF...</div></div>`;
+            const safeFileName = `SPMB_SMKYPT2_${data.noReg || 'REG'}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
-    // 4. Tempatkan Container Render persis di titik (0,0) agar tidak terpotong
-    const tempContainer = document.createElement('div');
-    tempContainer.style.cssText = 'position:fixed; top:0; left:0; width:750px; background:#ffffff; z-index:99998; margin:0; padding:0; overflow:hidden;';
-    tempContainer.appendChild(clone);
+            const opt = {
+                margin:       [8, 8, 8, 8],
+                filename:     safeFileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    allowTaint: true,
+                    logging: false, 
+                    windowWidth: 800
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
 
-    document.body.appendChild(tempContainer);
-    document.body.appendChild(overlay);
-
-    const safeFileName = `SPMB_SMKYPT2_${data.noReg || 'REG'}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-
-    const opt = {
-        margin:       [6, 6, 6, 6],
-        filename:     safeFileName,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
-            allowTaint: true,
-            logging: false,
-            scrollX: 0,
-            scrollY: 0,
-            x: 0,
-            y: 0,
-            windowWidth: 750
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    function cleanup() {
-        if (document.body.contains(tempContainer)) document.body.removeChild(tempContainer);
-        if (document.body.contains(overlay)) document.body.removeChild(overlay);
-        if (btn) {
-            btn.innerHTML = originalBtnHtml;
-            btn.disabled = false;
+            // 3. Generate and trigger direct file download
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(clone).save().then(() => {
+                    cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                    showToast('PDF berhasil diunduh ke folder Downloads!');
+                }).catch(err => {
+                    console.error('html2pdf export error:', err);
+                    cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                    // Beralih ke fallback jsPDF tanpa membuka dialog printer
+                    fallbackPDFDownload(data, safeFileName);
+                });
+            } else {
+                cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                fallbackPDFDownload(data, safeFileName);
+            }
         }
-    }
+        
+        function cleanUpPDF(container, btnElement, originalHtml) {
+            if (container && document.body.contains(container)) {
+                document.body.removeChild(container);
+            }
+            if (btnElement) {
+                btnElement.innerHTML = originalHtml;
+                btnElement.disabled = false;
+            }
+        }
 
-    // 5. Eksekusi pengunduhan PDF
-    if (typeof html2pdf !== 'undefined') {
-        html2pdf().set(opt).from(clone).save().then(() => {
-            cleanup();
-            showToast('PDF berhasil diunduh ke folder Downloads!');
-        }).catch(err => {
-            console.error('html2pdf export error:', err);
-            cleanup();
-            fallbackPDFDownload(data, safeFileName);
-        });
-    } else {
-        cleanup();
-        fallbackPDFDownload(data, safeFileName);
-    }
+        // Fallback Direct Text PDF Exporter using jsPDF if Canvas Engine is blocked
+        function fallbackPDFDownload(data, filename) {
+            try {
+                const { jsPDF } = window.jspdf || window;
+                if (!jsPDF) {
+                    showToast('Gagal memproses file PDF.', 'warning');
+                    return;
+                }
+                const doc = new jsPDF();
+                doc.setFontSize(14);
+                doc.text("SMK YPT 2 PURBALINGGA", 20, 20);
+                doc.setFontSize(11);
+                doc.text("BUKTI PENDAFTARAN PESERTA DIDIK BARU (SPMB)", 20, 28);
+                doc.text("Tahun Ajaran 2027/2028", 20, 34);
+                doc.line(20, 38, 190, 38);
+
+                let y = 48;
+                doc.setFontSize(10);
+                doc.text(`No. Registrasi : ${data.noReg || '-'}`, 20, y); y += 7;
+                doc.text(`Nama Lengkap   : ${data.field_1_nama || '-'}`, 20, y); y += 7;
+                doc.text(`Jenis Kelamin  : ${data.field_2_jk || '-'}`, 20, y); y += 7;
+                doc.text(`TTL            : ${data.field_3_tempat_lahir || '-'}, ${data.field_4_tgl_lahir || '-'}`, 20, y); y += 7;
+                doc.text(`NIK            : ${data.field_8_nik || '-'}`, 20, y); y += 7;
+                doc.text(`No. KK         : ${data.field_7_no_kk || '-'}`, 20, y); y += 7;
+                doc.text(`Jurusan Pilihan: ${data.field_19_jurusan || '-'}`, 20, y); y += 7;
+                doc.text(`Asal Sekolah   : ${data.field_16_asal_sekolah || '-'}`, 20, y); y += 7;
+                doc.text(`No. HP Siswa   : ${data.field_6_hp_siswa || '-'}`, 20, y); y += 7;
+                doc.text(`No. HP Ortu    : ${data.field_30_hp_ortu || '-'}`, 20, y); y += 7;
+                doc.text(`Buta Warna     : ${data.field_cek_buta_warna || 'Belum di cek'}`, 20, y); y += 7;
+                doc.text(`Tato           : ${data.field_cek_tato || 'Belum di cek'}`, 20, y); y += 7;
+                doc.text(`Tindik         : ${data.field_cek_tindik || 'Belum di cek'}`, 20, y); y += 12;
+                
+                doc.text("Purbalingga, " + new Date().toLocaleDateString('id-ID'), 120, y); y += 20;
+                doc.text(`( ${data.field_1_nama || 'Pendaftar'} )`, 120, y);
+
+                doc.save(filename);
+                showToast('File PDF berhasil diunduh!');
+            } catch(e) {
+                console.error('Fallback PDF error:', e);
+                showToast('Gagal mengunduh file PDF.', 'warning');
+            }
+        }
+
+        // Render Student Database Table
+        function renderTable() {
+            const tbody = document.getElementById('student-table-body');
+            const emptyState = document.getElementById('empty-state');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const filterJurusan = document.getElementById('filter-jurusan').value;
+
+            tbody.innerHTML = '';
+
+            const filtered = studentsDatabase.filter(item => {
+                const nama = item.field_1_nama ? item.field_1_nama.toLowerCase() : '';
+                const reg = item.noReg ? item.noReg.toLowerCase() : '';
+                const nik = item.field_8_nik ? item.field_8_nik : '';
+                const sekolah = item.field_16_asal_sekolah ? item.field_16_asal_sekolah.toLowerCase() : '';
+                
+                const matchesSearch = nama.includes(search) || reg.includes(search) || nik.includes(search) || sekolah.includes(search);
+                const matchesJurusan = filterJurusan ? item.field_19_jurusan === filterJurusan : true;
+                return matchesSearch && matchesJurusan;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                filtered.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50/50 hover:bg-gray-100/50';
+                    
+                    const butaWarnaBadge = item.field_cek_buta_warna === 'Belum di cek' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">Belum di cek</span>' :
+                                          item.field_cek_buta_warna === 'Normal' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Normal</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-800">' + (item.field_cek_buta_warna || '-') + '</span>';
+                                          
+                    const tatoBadge = item.field_cek_tato === 'Belum di cek' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">Belum di cek</span>' :
+                                      item.field_cek_tato === 'Tidak' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Tidak</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Ada/Bekas</span>';
+                                      
+                    const tindikBadge = item.field_cek_tindik === 'Belum di cek' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">Belum di cek</span>' :
+                                        item.field_cek_tindik === 'Tidak' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Tidak</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Ada/Bekas</span>';
+
+                    const itemJson = JSON.stringify(item).replace(/'/g, "&apos;");
+
+                    tr.innerHTML = `
+                        <td class="px-3 py-2.5 font-bold font-mono text-google-blue border-r">${item.noReg || '-'}</td>
+                        <td class="px-3 py-2.5 font-semibold text-gray-800 border-r">${item.field_1_nama || '-'}</td>
+                        <td class="px-3 py-2.5 border-r">${item.field_2_jk === 'Laki-laki' ? 'L' : 'P'}</td>
+                        <td class="px-3 py-2.5 font-bold text-gray-700 border-r">${item.field_19_jurusan || '-'}</td>
+                        <td class="px-3 py-2.5 border-r">${butaWarnaBadge}</td>
+                        <td class="px-3 py-2.5 border-r">${tatoBadge}</td>
+                        <td class="px-3 py-2.5 border-r">${tindikBadge}</td>
+                        <td class="px-3 py-2.5 border-r max-w-xs truncate" title="${item.field_16_asal_sekolah || ''}">${item.field_16_asal_sekolah || '-'}</td>
+                        <td class="px-3 py-2.5 border-r font-mono">${item.field_6_hp_siswa || '-'}</td>
+                        <td class="px-3 py-2.5 border-r font-mono text-gray-500">${item.field_8_nik || '-'}</td>
+                        <td class="px-3 py-2.5 text-center">
+                            <div class="flex items-center justify-center space-x-1">
+                                <button onclick='downloadGeneratedPDF(${itemJson})' title="Export PDF File" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                                <button onclick="promptDeleteStudent('${item.noReg}')" title="Hapus Data" class="p-1.5 text-red-600 hover:bg-red-50 rounded">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        // Confirm Delete Prompt using Custom Modal
+        function promptDeleteStudent(noReg) {
+            document.getElementById('confirm-title').innerText = "Hapus Data Pendaftar";
+            document.getElementById('confirm-message').innerText = `Apakah Anda yakin ingin menghapus data dengan No. Reg ${noReg}?`;
+            
+            pendingAction = function() {
+                deleteStudent(noReg);
+            };
+
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        function deleteStudent(noReg) {
+            studentsDatabase = studentsDatabase.filter(s => s.noReg !== noReg);
+            localStorage.setItem('spmb_students_db', JSON.stringify(studentsDatabase));
+            renderTable();
+            showToast(`Data ${noReg} berhasil dihapus dari database lokal.`);
+        }
+
+        function promptClearAllData() {
+            document.getElementById('confirm-title').innerText = "Reset Database Lokal";
+            document.getElementById('confirm-message').innerText = "Apakah Anda yakin ingin menghapus SELURUH data pendaftar dari penyimpanan browser lokal ini?";
+            
+            pendingAction = function() {
+                clearAllData();
+            };
+
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        function clearAllData() {
+            studentsDatabase = [];
+            localStorage.removeItem('spmb_students_db');
+            renderTable();
+            showToast("Database lokal berhasil dibersihkan!");
+        }
+
+        // Modal Action Listener
+        document.getElementById('confirm-btn-ok').onclick = function() {
+            if (typeof pendingAction === 'function') {
+                pendingAction();
+            }
+            document.getElementById('confirm-modal').classList.add('hidden');
+            pendingAction = null;
+        };
+
+        document.getElementById('confirm-btn-cancel').onclick = function() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            pendingAction = null;
+        };
+
+        // Export Database to CSV File
+        function exportToCSV() {
+            if (studentsDatabase.length === 0) {
+                showToast("Tidak ada data pendaftar untuk di-export!", "warning");
+                return;
+            }
+
+            const headers = Object.keys(studentsDatabase[0]);
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // UTF-8 BOM for Excel
+            csvContent += headers.join(",") + "\n";
+
+            studentsDatabase.forEach(row => {
+                const values = headers.map(header => {
+                    const val = row[header] !== undefined ? row[header] : "";
+                    const escaped = ('' + val).replace(/"/g, '""');
+                    return `"${escaped}"`;
+                });
+                csvContent += values.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `SPMB_SMK_YPT_2_Purbalingga_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Export CSV berhasil!");
+        }
+
+        // Copy Apps Script snippet
+        function copyAppsScriptCode() {
+            const codeText = document.getElementById('apps-script-code-block').innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                showToast("Kode Apps Script berhasil disalin ke clipboard!");
+            }).catch(err => {
+                showToast("Gagal menyalin kode.", "warning");
+            });
+        }
     </script>
 </body>
 </html>
