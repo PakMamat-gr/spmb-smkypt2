@@ -75,7 +75,7 @@
             position: absolute;
             left: -9999px;
             top: 0;
-            width: 780px;
+            width: 794px;
             background: #ffffff;
             z-index: -100;
             opacity: 0;
@@ -968,7 +968,7 @@ function doPost(e) {
 
     <!-- OFF-SCREEN RENDER CONTAINER FOR PDF EXPORT -->
     <div id="pdf-render-container">
-        <div id="pdf-template" style="padding: 14px 18px; background: #ffffff; color: #000000; font-family: 'Times New Roman', Times, serif; width: 720px; margin: 0; box-sizing: border-box; text-align: left;">
+        <div id="pdf-template" style="padding: 16px 20px; background: #ffffff; color: #000000; font-family: 'Times New Roman', Times, serif; width: 750px; margin: 0 auto; box-sizing: border-box; text-align: left;">
             
             <!-- KOP SURAT OPTIMIZED FOR A4 SINGLE PAGE -->
             <div id="pdf-kop-header" style="width: 100%; margin-bottom: 6px; border-bottom: 3px double #000; padding-bottom: 4px;">
@@ -1415,7 +1415,7 @@ function doPost(e) {
             window.print();
         }
 
-        // EXPORT PDF DIRECTLY TO DOWNLOAD FILE WITHOUT OPENING PRINTER DIALOG
+        // EXPORT PDF DIRECTLY TO DOWNLOAD FILE WITHOUT OPENING PRINTER DIALOG (FIXED OFF-SCREEN RENDER)
         function downloadGeneratedPDF(studentData = null) {
             const data = studentData || currentStudentData;
             if (!data) {
@@ -1434,22 +1434,22 @@ function doPost(e) {
                 btn.disabled = true;
             }
 
-            // 2. Clone PDF template for clean offscreen rendering
+            // 2. Clone PDF template into fixed coordinate offscreen container
             const element = document.getElementById('pdf-template');
-            const clone = element.cloneNode(true);
-            
-            // Ensure clone is fully visible in canvas renderer
-            clone.style.display = 'block';
-            clone.style.visibility = 'visible';
-            clone.style.opacity = '1';
             
             const tempContainer = document.createElement('div');
-tempContainer.style.position = 'absolute';
-tempContainer.style.left = '0'; 
-tempContainer.style.top = window.scrollY + 'px'; 
-tempContainer.style.width = '780px';
-tempContainer.style.backgroundColor = '#ffffff';
-tempContainer.style.zIndex = '-9999';
+            tempContainer.style.position = 'fixed';
+            tempContainer.style.left = '0'; 
+            tempContainer.style.top = '0'; 
+            tempContainer.style.width = '794px'; // Precision A4 width @ 96DPI
+            tempContainer.style.backgroundColor = '#ffffff';
+            tempContainer.style.zIndex = '-99999';
+            tempContainer.style.opacity = '1';
+            
+            const clone = element.cloneNode(true);
+            clone.style.display = 'block';
+            clone.style.visibility = 'visible';
+            clone.style.margin = '0 auto';
             
             tempContainer.appendChild(clone);
             document.body.appendChild(tempContainer);
@@ -1457,7 +1457,7 @@ tempContainer.style.zIndex = '-9999';
             const safeFileName = `SPMB_SMKYPT2_${data.noReg || 'REG'}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
             const opt = {
-                margin:       [8, 8, 8, 8],
+                margin:       [6, 6, 6, 6],
                 filename:     safeFileName,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
@@ -1465,26 +1465,31 @@ tempContainer.style.zIndex = '-9999';
                     useCORS: true, 
                     allowTaint: true,
                     logging: false, 
-                    windowWidth: 800
+                    scrollX: 0,
+                    scrollY: 0,
+                    x: 0,
+                    y: 0,
+                    windowWidth: 794
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // 3. Generate and trigger direct file download
-            if (typeof html2pdf !== 'undefined') {
-                html2pdf().set(opt).from(clone).save().then(() => {
+            // 3. Render and trigger download with slight timeout for assets stabilization
+            setTimeout(() => {
+                if (typeof html2pdf !== 'undefined') {
+                    html2pdf().set(opt).from(clone).save().then(() => {
+                        cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                        showToast('PDF berhasil diunduh ke folder Downloads!');
+                    }).catch(err => {
+                        console.error('html2pdf export error:', err);
+                        cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                        fallbackPDFDownload(data, safeFileName);
+                    });
+                } else {
                     cleanUpPDF(tempContainer, btn, originalBtnHtml);
-                    showToast('PDF berhasil diunduh ke folder Downloads!');
-                }).catch(err => {
-                    console.error('html2pdf export error:', err);
-                    cleanUpPDF(tempContainer, btn, originalBtnHtml);
-                    // Beralih ke fallback jsPDF tanpa membuka dialog printer
                     fallbackPDFDownload(data, safeFileName);
-                });
-            } else {
-                cleanUpPDF(tempContainer, btn, originalBtnHtml);
-                fallbackPDFDownload(data, safeFileName);
-            }
+                }
+            }, 250);
         }
         
         function cleanUpPDF(container, btnElement, originalHtml) {
