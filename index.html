@@ -131,7 +131,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-gray-800 leading-tight">SPMB SMK YPT 2 Purbalingga</h1>
-                    <p class="text-xs text-gray-500">Sistem Penerimaan Murid Baru Online</p>
+                    <p class="text-xs text-gray-500">Sistem Penerimaan Murid Baru Online (Spreadsheet Realtime)</p>
                 </div>
             </div>
 
@@ -144,7 +144,7 @@
                     <i class="fas fa-table mr-2"></i>Database Spreadsheet
                 </button>
                 <button onclick="switchTab('info-tab')" id="nav-info-tab" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
-                    <i class="fas fa-info-circle mr-2"></i>Informasi & Bantuan
+                    <i class="fas fa-info-circle mr-2"></i>Informasi & Tutorial Sync
                 </button>
             </nav>
 
@@ -165,7 +165,7 @@
                 <i class="fas fa-table mr-2"></i>Database Spreadsheet
             </button>
             <button onclick="switchTab('info-tab'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
-                <i class="fas fa-info-circle mr-2"></i>Informasi & Bantuan
+                <i class="fas fa-info-circle mr-2"></i>Informasi & Tutorial Sync
             </button>
         </div>
     </header>
@@ -185,11 +185,11 @@
                     <p class="mt-1 text-blue-100 text-sm sm:text-base">SMK YPT 2 Purbalingga - Unggul, Terampil, Mandiri & Berkarakter</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-3 rounded-xl border border-white/20 text-xs sm:text-sm shrink-0">
-                <i class="fas fa-shield-alt text-amber-300 text-2xl"></i>
+            <div class="flex items-center space-x-3 bg-white/10 backdrop-blur-md px-4 py-3 rounded-xl border border-white/20 text-xs sm:text-sm shrink-0">
+                <div class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></div>
                 <div>
-                    <div class="font-bold">Terakreditasi A</div>
-                    <div class="text-blue-200">Purbalingga, Jawa Tengah</div>
+                    <div class="font-bold text-white" id="cloud-status-badge">Cloud Sync Aktif</div>
+                    <div class="text-blue-200 text-xs" id="cloud-last-sync">Terhubung ke Google Sheets</div>
                 </div>
             </div>
         </div>
@@ -207,11 +207,14 @@
                 <div class="google-card p-6 border-t-8 border-google-blue">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Formulir Pendaftaran Siswa Baru</h2>
                     <p class="text-sm text-gray-600 leading-relaxed">
-                        Isilah data calon peserta didik baru dengan teliti dan benar. Setelah mengirimkan data, bukti pendaftaran dapat langsung diunduh dalam format <b>PDF</b> dan nomor pendaftaran otomatis tergenerasi sesuai dengan jurusan utama pilihan Anda (Contoh: <b>TKR-001, TSM-001, TAV-001, TJKT-001, DKV-001</b>).
+                        Isilah data calon peserta didik baru dengan teliti. Data yang dikirimkan akan <b>otomatis tersimpan secara realtime ke Google Sheets</b> dan dapat diakses oleh panitia di mana saja.
                     </p>
-                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800 flex items-center">
-                        <i class="fas fa-info-circle text-blue-600 text-base mr-2.5 flex-shrink-0"></i>
-                        <span>Pastikan Nomor WhatsApp aktif agar panitia SPMB dapat menghubungi Anda untuk verifikasi berkas.</span>
+                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-cloud-upload-alt text-blue-600 text-base mr-2.5 flex-shrink-0"></i>
+                            <span>Sinkronisasi Google Spreadsheet: <strong id="webhook-info-status">Sedang memeriksa URL Webhook...</strong></span>
+                        </div>
+                        <button type="button" onclick="switchTab('info-tab')" class="text-google-blue underline text-xs font-bold shrink-0 ml-2">Atur Spreadsheet</button>
                     </div>
                 </div>
 
@@ -287,25 +290,29 @@
                         <!-- Alamat Lengkap -->
                         <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
                             <label class="block text-sm font-semibold text-gray-800 mb-2">Alamat Lengkap Tempat Tinggal <span class="text-red-500">*</span></label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                                 <div>
-                                    <label class="text-xs text-gray-600 block mb-1">RT / RW</label>
-                                    <input type="text" id="field_5_rtrw" required placeholder="002 / 005" class="input-google text-sm">
+                                    <label class="text-xs text-gray-600 block mb-1">RT <span class="text-red-500">*</span></label>
+                                    <input type="text" id="field_5_rt" required placeholder="002" class="input-google text-sm">
                                 </div>
                                 <div>
-                                    <label class="text-xs text-gray-600 block mb-1">Desa / Kelurahan</label>
+                                    <label class="text-xs text-gray-600 block mb-1">RW <span class="text-red-500">*</span></label>
+                                    <input type="text" id="field_5_rw" required placeholder="005" class="input-google text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 block mb-1">Desa / Kelurahan <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_desa" required placeholder="Nama Desa" class="input-google text-sm">
                                 </div>
                                 <div>
-                                    <label class="text-xs text-gray-600 block mb-1">Kecamatan</label>
+                                    <label class="text-xs text-gray-600 block mb-1">Kecamatan <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_kecamatan" required placeholder="Kecamatan" class="input-google text-sm">
                                 </div>
                                 <div>
-                                    <label class="text-xs text-gray-600 block mb-1">Kota / Kabupaten</label>
+                                    <label class="text-xs text-gray-600 block mb-1">Kota / Kabupaten <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_kota" required value="Purbalingga" class="input-google text-sm">
                                 </div>
-                                <div class="sm:col-span-2 lg:col-span-2">
-                                    <label class="text-xs text-gray-600 block mb-1">Provinsi</label>
+                                <div class="sm:col-span-2 lg:col-span-3">
+                                    <label class="text-xs text-gray-600 block mb-1">Provinsi <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_provinsi" required value="Jawa Tengah" class="input-google text-sm">
                                 </div>
                             </div>
@@ -408,18 +415,134 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Asal Sekolah SMP/MTs <span class="text-red-500">*</span></label>
                             <select id="field_16_asal_sekolah_select" onchange="toggleSekolahLainnya()" required class="input-google bg-white">
                                 <option value="">-- Pilih Asal Sekolah --</option>
-                                <option value="SMP Negeri 1 Purbalingga">SMP Negeri 1 Purbalingga</option>
-                                <option value="SMP Negeri 2 Purbalingga">SMP Negeri 2 Purbalingga</option>
-                                <option value="SMP Negeri 3 Purbalingga">SMP Negeri 3 Purbalingga</option>
-                                <option value="SMP Negeri 4 Purbalingga">SMP Negeri 4 Purbalingga</option>
-                                <option value="SMP Negeri 1 Kalimanah">SMP Negeri 1 Kalimanah</option>
-                                <option value="SMP Negeri 2 Kalimanah">SMP Negeri 2 Kalimanah</option>
-                                <option value="SMP Negeri 1 Bobotsari">SMP Negeri 1 Bobotsari</option>
-                                <option value="SMP Negeri 1 Padamara">SMP Negeri 1 Padamara</option>
-                                <option value="SMP Negeri 1 Kutasari">SMP Negeri 1 Kutasari</option>
+                                <option value="MTs Al Hikmah Kalikabong">MTs Al Hikmah Kalikabong</option>
+                                <option value="MTs Darrrul Abror Bukateja">MTs Darrrul Abror Bukateja</option>
+                                <option value="MTs Darussunah Wangon">MTs Darussunah Wangon</option>
+                                <option value="MTs Hasyim Asy'ari">MTs Hasyim Asy'ari</option>
+                                <option value="MTs Kalibagor">MTs Kalibagor</option>
+                                <option value="MTs Ma'arif NU 04 Tamansari">MTs Ma'arif NU 04 Tamansari</option>
+                                <option value="MTs Ma'arif Nu 1 Riyadush Sholihin Klampok">MTs Ma'arif Nu 1 Riyadush Sholihin Klampok</option>
+                                <option value="MTs Ma'arif NU 1 Sokaraja">MTs Ma'arif NU 1 Sokaraja</option>
+                                <option value="MTs Ma'arif NU 12 Arenan">MTs Ma'arif NU 12 Arenan</option>
+                                <option value="MTs Ma'arif NU 2 Karangklesem">MTs Ma'arif NU 2 Karangklesem</option>
+                                <option value="MTs Ma'arif NU 3 Rembang">MTs Ma'arif NU 3 Rembang</option>
+                                <option value="MTs Ma'arif NU 5 Majasari">MTs Ma'arif NU 5 Majasari</option>
+                                <option value="MTs Ma'arif NU 6 Bojongsari">MTs Ma'arif NU 6 Bojongsari</option>
+                                <option value="MTs Maarif NU 1 Kembaran">MTs Maarif NU 1 Kembaran</option>
+                                <option value="MTs Maarif NU 1 Kemranjem">MTs Maarif NU 1 Kemranjem</option>
+                                <option value="MTs Maarif NU 1 Sokaraja">MTs Maarif NU 1 Sokaraja</option>
+                                <option value="MTs Maarif NU 10 Krenceng">MTs Maarif NU 10 Krenceng</option>
+                                <option value="MTs Maarif NU Purworejo">MTs Maarif NU Purworejo</option>
+                                <option value="MTs Manhalul Ahbaab Pakujati Brebes">MTs Manhalul Ahbaab Pakujati Brebes</option>
+                                <option value="MTs Minhajut Tholabah Bukateja">MTs Minhajut Tholabah Bukateja</option>
+                                <option value="MTs Minthol Lawi Gede">MTs Minthol Lawi Gede</option>
+                                <option value="MTs Muhammadiyah 01 Purbalingga">MTs Muhammadiyah 01 Purbalingga</option>
+                                <option value="MTs Muhammadiyah 02 Bukateja">MTs Muhammadiyah 02 Bukateja</option>
+                                <option value="MTs Muhammadiyah 04 Purbalingga">MTs Muhammadiyah 04 Purbalingga</option>
+                                <option value="MTs Muhammadiyah 06 Purbalingga">MTs Muhammadiyah 06 Purbalingga</option>
+                                <option value="MTs Muhammadiyah 08 Kemangkon">MTs Muhammadiyah 08 Kemangkon</option>
+                                <option value="MTs Muhammadiyah 10 Gembong">MTs Muhammadiyah 10 Gembong</option>
+                                <option value="MTs Negeri 1 Banyumas">MTs Negeri 1 Banyumas</option>
+                                <option value="MTs Negeri 1 Pekalongan">MTs Negeri 1 Pekalongan</option>
                                 <option value="MTs Negeri 1 Purbalingga">MTs Negeri 1 Purbalingga</option>
                                 <option value="MTs Negeri 2 Purbalingga">MTs Negeri 2 Purbalingga</option>
+                                <option value="MTs Negeri 3 Banyumas">MTs Negeri 3 Banyumas</option>
                                 <option value="MTs Negeri 3 Purbalingga">MTs Negeri 3 Purbalingga</option>
+                                <option value="MTs Nurul Barokah">MTs Nurul Barokah</option>
+                                <option value="MTs Nurul Huda Patimuan">MTs Nurul Huda Patimuan</option>
+                                <option value="MTs Nurul Huda Pesanggrahan">MTs Nurul Huda Pesanggrahan</option>
+                                <option value="MTs PPPI Miftahussalam Banyumas">MTs PPPI Miftahussalam Banyumas</option>
+                                <option value="MTs Ushriyah Purbalingga">MTs Ushriyah Purbalingga</option>
+                                <option value="MTs Wathoniyah Islamiyah Kebarongan">MTs Wathoniyah Islamiyah Kebarongan</option>
+                                <option value="MTs Yinuba Bojongsari">MTs Yinuba Bojongsari</option>
+                                <option value="Paket B">Paket B</option>
+                                <option value="SMP Abdi Negara 1 Kaligondang">SMP Abdi Negara 1 Kaligondang</option>
+                                <option value="SMP Al Irsyad Batu">SMP Al Irsyad Batu</option>
+                                <option value="SMP Al-Ashriyah Nurul Iman Parung Bogor">SMP Al-Ashriyah Nurul Iman Parung Bogor</option>
+                                <option value="SMP Arrahman Depok">SMP Arrahman Depok</option>
+                                <option value="SMP Eka Tjipta Kencana">SMP Eka Tjipta Kencana</option>
+                                <option value="SMP Islam Andalusia Kebasen">SMP Islam Andalusia Kebasen</option>
+                                <option value="SMP Islam Manhalul Nasyiin">SMP Islam Manhalul Nasyiin</option>
+                                <option value="SMP Islam Ngadirejo Temanggung">SMP Islam Ngadirejo Temanggung</option>
+                                <option value="SMP Islam Walisongo">SMP Islam Walisongo</option>
+                                <option value="SMP Muhammadiyah 01 Purbalingga">SMP Muhammadiyah 01 Purbalingga</option>
+                                <option value="SMP Muhammadiyah 08 Kemangkon">SMP Muhammadiyah 08 Kemangkon</option>
+                                <option value="SMP Muhammadiyah 1 Mlati">SMP Muhammadiyah 1 Mlati</option>
+                                <option value="SMP Muhammadiyah Boarding School Zam-zam Cilongok">SMP Muhammadiyah Boarding School Zam-zam Cilongok</option>
+                                <option value="SMP Muhammadiyah Cilongok">SMP Muhammadiyah Cilongok</option>
+                                <option value="SMP Muhammadiyah Kembaran">SMP Muhammadiyah Kembaran</option>
+                                <option value="SMP Muhammadiyah Kramat">SMP Muhammadiyah Kramat</option>
+                                <option value="SMP Muhammadiyah Sokaraja">SMP Muhammadiyah Sokaraja</option>
+                                <option value="SMP Negeri 1 Banyumas">SMP Negeri 1 Banyumas</option>
+                                <option value="SMP Negeri 1 Bojongsari">SMP Negeri 1 Bojongsari</option>
+                                <option value="SMP Negeri 1 Bukateja">SMP Negeri 1 Bukateja</option>
+                                <option value="SMP Negeri 1 Ciomas">SMP Negeri 1 Ciomas</option>
+                                <option value="SMP Negeri 1 Gunung Putri Bogor">SMP Negeri 1 Gunung Putri Bogor</option>
+                                <option value="SMP Negeri 1 Kalibagor">SMP Negeri 1 Kalibagor</option>
+                                <option value="SMP Negeri 1 Kaligondang">SMP Negeri 1 Kaligondang</option>
+                                <option value="SMP Negeri 1 Kalimanah">SMP Negeri 1 Kalimanah</option>
+                                <option value="SMP Negeri 1 Karangjambu">SMP Negeri 1 Karangjambu</option>
+                                <option value="SMP Negeri 1 Karangmoncol">SMP Negeri 1 Karangmoncol</option>
+                                <option value="SMP Negeri 1 Karangreja">SMP Negeri 1 Karangreja</option>
+                                <option value="SMP Negeri 1 Kemangkon">SMP Negeri 1 Kemangkon</option>
+                                <option value="SMP Negeri 1 Kembaran">SMP Negeri 1 Kembaran</option>
+                                <option value="SMP Negeri 1 Kuantan Mudik">SMP Negeri 1 Kuantan Mudik</option>
+                                <option value="SMP Negeri 1 Kutasari">SMP Negeri 1 Kutasari</option>
+                                <option value="SMP Negeri 1 Manokwari">SMP Negeri 1 Manokwari</option>
+                                <option value="SMP Negeri 1 Mrebet">SMP Negeri 1 Mrebet</option>
+                                <option value="SMP Negeri 1 Padamara">SMP Negeri 1 Padamara</option>
+                                <option value="SMP Negeri 1 Pengadegan">SMP Negeri 1 Pengadegan</option>
+                                <option value="SMP Negeri 1 Purbalingga">SMP Negeri 1 Purbalingga</option>
+                                <option value="SMP Negeri 1 Rembang">SMP Negeri 1 Rembang</option>
+                                <option value="SMP Negeri 1 Sokaraja">SMP Negeri 1 Sokaraja</option>
+                                <option value="SMP Negeri 1 Sumbang">SMP Negeri 1 Sumbang</option>
+                                <option value="SMP Negeri 1 Sumberbaru Jember">SMP Negeri 1 Sumberbaru Jember</option>
+                                <option value="SMP Negeri 2 Bojongsari">SMP Negeri 2 Bojongsari</option>
+                                <option value="SMP Negeri 2 Bukateja">SMP Negeri 2 Bukateja</option>
+                                <option value="SMP Negeri 2 Kalibagor">SMP Negeri 2 Kalibagor</option>
+                                <option value="SMP Negeri 2 Kaligondang">SMP Negeri 2 Kaligondang</option>
+                                <option value="SMP Negeri 2 Kalimanah">SMP Negeri 2 Kalimanah</option>
+                                <option value="SMP Negeri 2 Kejobong">SMP Negeri 2 Kejobong</option>
+                                <option value="SMP Negeri 2 Kemangkon">SMP Negeri 2 Kemangkon</option>
+                                <option value="SMP Negeri 2 Kembaran">SMP Negeri 2 Kembaran</option>
+                                <option value="SMP Negeri 2 Kutasari">SMP Negeri 2 Kutasari</option>
+                                <option value="SMP Negeri 2 Maesan">SMP Negeri 2 Maesan</option>
+                                <option value="SMP Negeri 2 Padamara">SMP Negeri 2 Padamara</option>
+                                <option value="SMP Negeri 2 Purbalingga">SMP Negeri 2 Purbalingga</option>
+                                <option value="SMP Negeri 2 Rembang">SMP Negeri 2 Rembang</option>
+                                <option value="SMP Negeri 2 Sokaraja">SMP Negeri 2 Sokaraja</option>
+                                <option value="SMP Negeri 2 Sumbang">SMP Negeri 2 Sumbang</option>
+                                <option value="SMP Negeri 2 Tangerang">SMP Negeri 2 Tangerang</option>
+                                <option value="SMP Negeri 3 Batam">SMP Negeri 3 Batam</option>
+                                <option value="SMP Negeri 3 Bobotsari">SMP Negeri 3 Bobotsari</option>
+                                <option value="SMP Negeri 3 Bukateja">SMP Negeri 3 Bukateja</option>
+                                <option value="SMP Negeri 3 Kalibagor">SMP Negeri 3 Kalibagor</option>
+                                <option value="SMP Negeri 3 Kalimanah">SMP Negeri 3 Kalimanah</option>
+                                <option value="SMP Negeri 3 Karangmoncol">SMP Negeri 3 Karangmoncol</option>
+                                <option value="SMP Negeri 3 Karangreja">SMP Negeri 3 Karangreja</option>
+                                <option value="SMP Negeri 3 Kemangkon">SMP Negeri 3 Kemangkon</option>
+                                <option value="SMP Negeri 3 Kutasari">SMP Negeri 3 Kutasari</option>
+                                <option value="SMP Negeri 3 Mrebet">SMP Negeri 3 Mrebet</option>
+                                <option value="SMP Negeri 3 Pengadegan">SMP Negeri 3 Pengadegan</option>
+                                <option value="SMP Negeri 3 Purbalingga">SMP Negeri 3 Purbalingga</option>
+                                <option value="SMP Negeri 3 Sokaraja">SMP Negeri 3 Sokaraja</option>
+                                <option value="SMP Negeri 4 Kalibagor">SMP Negeri 4 Kalibagor</option>
+                                <option value="SMP Negeri 4 Kemangkon">SMP Negeri 4 Kemangkon</option>
+                                <option value="SMP Negeri 4 Kutasari">SMP Negeri 4 Kutasari</option>
+                                <option value="SMP Negeri 4 Mukomuko Bengkulu">SMP Negeri 4 Mukomuko Bengkulu</option>
+                                <option value="SMP Negeri 4 Purbalingga">SMP Negeri 4 Purbalingga</option>
+                                <option value="SMP Negeri 4 Sumbang">SMP Negeri 4 Sumbang</option>
+                                <option value="SMP Negeri 5 Mrebet">SMP Negeri 5 Mrebet</option>
+                                <option value="SMP Negeri 5 Purbalingga">SMP Negeri 5 Purbalingga</option>
+                                <option value="SMP Negeri 6 Rembang">SMP Negeri 6 Rembang</option>
+                                <option value="SMP NU 1 Berbasis Pesantren Bojong Tegal">SMP NU 1 Berbasis Pesantren Bojong Tegal</option>
+                                <option value="SMP PGRI Baturaden">SMP PGRI Baturaden</option>
+                                <option value="SMP PGRI Sumbang">SMP PGRI Sumbang</option>
+                                <option value="SMP Sambas Istiqomah Purbalingga">SMP Sambas Istiqomah Purbalingga</option>
+                                <option value="SMP Santo Borromeus">SMP Santo Borromeus</option>
+                                <option value="SMP Tamtama">SMP Tamtama</option>
+                                <option value="SMP Yapensori">SMP Yapensori</option>
+
                                 <option value="Lainnya">Lainnya (Ketik Manual)...</option>
                             </select>
                             <input type="text" id="field_16_sekolah_custom" class="input-google mt-2 hidden" placeholder="Tuliskan Nama Sekolah Asal...">
@@ -475,7 +598,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 Pilihan Jurusan Utama <span class="text-red-500">*</span>
-                                <span class="text-xs font-normal text-blue-600 block">Nomor pendaftaran otomatis sesuai kode jurusan pilihan Anda (TKR-001, TSM-001, TAV-001, TJKT-001, DKV-001 dst.)</span>
+                                <span class="text-xs font-normal text-blue-600 block">Nomor pendaftaran otomatis sesuai kode jurusan pilihan Anda (Format: Jurusan-27-001, contoh: TKR-27-001, TSM-27-001, TAV-27-001, TJKT-27-001, DKV-27-001)</span>
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label class="border-2 border-gray-200 rounded-lg p-3 flex items-center space-x-3 cursor-pointer hover:border-google-blue hover:bg-blue-50/50 transition">
@@ -597,7 +720,56 @@
                     </div>
                 </div>
 
-                <!-- SECTION 6: KESEHATAN, PRESTASI & CITA-CITA -->
+                <!-- SECTION 6: BAGIAN CEK FISIK KHUSUS -->
+                <div class="google-card p-6 border-l-4 border-amber-500 bg-amber-50/20">
+                    <div class="flex items-center space-x-2 border-b pb-3 mb-5 border-amber-200">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                            <i class="fas fa-stethoscope text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Pemeriksaan / Cek Fisik Khusus</h3>
+                            <p class="text-xs text-gray-500">Hasil pemeriksaan kondisi fisik calon pendaftar</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <!-- Buta Warna -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Status Buta Warna <span class="text-red-500">*</span></label>
+                            <select id="field_cek_buta_warna" required class="input-google bg-white">
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Belum di cek">Belum di cek</option>
+                                <option value="Normal">Normal (Tidak Buta Warna)</option>
+                                <option value="Parsial">Parsial (Sebagian)</option>
+                                <option value="Buta Warna Total">Buta Warna Total</option>
+                            </select>
+                        </div>
+
+                        <!-- Tato / Bekas Tato -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Tato / Bekas Tato <span class="text-red-500">*</span></label>
+                            <select id="field_cek_tato" required class="input-google bg-white">
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Belum di cek">Belum di cek</option>
+                                <option value="Tidak">Tidak Ada</option>
+                                <option value="Ya">Ya (Ada / Bekas Tato)</option>
+                            </select>
+                        </div>
+
+                        <!-- Tindik / Bekas Tindik -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Tindik / Bekas Tindik <span class="text-red-500">*</span></label>
+                            <select id="field_cek_tindik" required class="input-google bg-white">
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Belum di cek">Belum di cek</option>
+                                <option value="Tidak">Tidak Ada</option>
+                                <option value="Ya">Ya (Ada / Bekas Tindik)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 7: KESEHATAN, PRESTASI & CITA-CITA -->
                 <div class="google-card p-6">
                     <div class="flex items-center space-x-2 border-b pb-3 mb-5">
                         <div class="w-8 h-8 rounded-full bg-blue-100 text-google-blue flex items-center justify-center font-bold">
@@ -635,7 +807,7 @@
 
                     <button type="submit" id="submit-btn" class="w-full sm:w-auto px-8 py-3.5 bg-google-blue hover:bg-google-hover text-white rounded-lg text-sm font-bold shadow-lg flex items-center justify-center space-x-2 transition">
                         <i class="fas fa-paper-plane"></i>
-                        <span>Kirim & Export PDF Pendaftaran</span>
+                        <span>Kirim & Sync ke Google Sheets</span>
                     </button>
                 </div>
 
@@ -648,35 +820,48 @@
             <div class="google-card p-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4 mb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-800">Database Pendaftar SPMB</h2>
-                        <p class="text-xs text-gray-500">Tampilan sinkronisasi spreadsheet internal & simulasi database.</p>
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            <span>Database Pendaftar Realtime</span>
+                            <span id="sync-spinner" class="hidden text-google-blue animate-spin text-sm"><i class="fas fa-sync-alt"></i></span>
+                        </h2>
+                        <p class="text-xs text-gray-500">Data tersinkronisasi otomatis dengan Google Spreadsheet & seluruh pengakses.</p>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="exportToCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center shadow">
-                            <i class="fas fa-file-excel mr-2"></i>Export CSV/Spreadsheet
+                        <button onclick="fetchFromGoogleSheets(true)" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold flex items-center shadow">
+                            <i class="fas fa-sync-alt mr-1.5"></i>Refresh Realtime
                         </button>
-                        <button onclick="clearAllData()" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-medium flex items-center">
-                            <i class="fas fa-trash-alt mr-1"></i>Hapus Semua
+                        <button onclick="exportToCSV()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center shadow">
+                            <i class="fas fa-file-excel mr-1.5"></i>Export CSV
+                        </button>
+                        <button onclick="promptClearAllData()" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-medium flex items-center">
+                            <i class="fas fa-trash-alt mr-1"></i>Reset Lokal
                         </button>
                     </div>
                 </div>
 
                 <!-- GOOGLE SHEET WEBHOOK -->
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-5 text-xs text-gray-700">
-                    <div class="font-bold text-gray-800 mb-1 flex items-center">
-                        <i class="fab fa-google-drive text-emerald-600 text-base mr-2"></i>
-                        Google Apps Script Webhook URL (Direct Google Sheets Sync)
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 mb-5 text-xs text-gray-700 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                        <div class="font-bold text-gray-800 flex items-center">
+                            <i class="fab fa-google-drive text-emerald-600 text-base mr-2"></i>
+                            Google Apps Script Webhook URL (Direct Google Sheets Sync)
+                        </div>
+                        <button onclick="switchTab('info-tab')" class="text-google-blue font-semibold hover:underline">
+                            <i class="fas fa-code mr-1"></i>Cara Dapatkan URL Apps Script
+                        </button>
                     </div>
-                    <div class="flex gap-2 mt-2">
-                        <input type="url" id="sheet_webhook_url" placeholder="https://script.google.com/macros/s/.../exec" class="input-google text-xs flex-grow bg-white">
-                        <button onclick="saveWebhookUrl()" class="px-4 py-1.5 bg-google-blue text-white rounded font-medium">Simpan URL</button>
+                    <div class="flex gap-2">
+                        <input type="url" id="sheet_webhook_url" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="input-google text-xs flex-grow bg-white">
+                        <button onclick="saveWebhookUrl()" class="px-4 py-2 bg-google-blue hover:bg-google-hover text-white rounded-lg font-bold shrink-0 shadow">
+                            Simpan & Hubungkan
+                        </button>
                     </div>
                 </div>
 
                 <!-- TABLE SEARCH & FILTER -->
                 <div class="flex flex-col sm:flex-row gap-3 mb-4">
-                    <input type="text" id="search-input" onkeyup="renderTable()" placeholder="Cari nama, NIK, sekolah, atau kode pendaftaran..." class="input-google text-xs flex-grow">
+                    <input type="text" id="search-input" onkeyup="renderTable()" placeholder="Cari nama, NIK, sekolah, atau no pendaftaran..." class="input-google text-xs flex-grow">
                     <select id="filter-jurusan" onchange="renderTable()" class="input-google text-xs sm:w-48 bg-white">
                         <option value="">Semua Jurusan</option>
                         <option value="TKR">TKR</option>
@@ -688,7 +873,7 @@
                 </div>
 
                 <!-- SPREADSHEET VIEW TABLE -->
-                <div class="overflow-x-auto border border-gray-200 rounded-lg shadow-inner max-h-[500px]">
+                <div class="overflow-x-auto border border-gray-200 rounded-lg shadow-inner max-h-[520px]">
                     <table class="w-full text-xs text-left text-gray-600">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0 border-b border-gray-200">
                             <tr>
@@ -696,6 +881,9 @@
                                 <th class="px-3 py-3 font-bold border-r">Nama Lengkap</th>
                                 <th class="px-3 py-3 font-bold border-r">L/P</th>
                                 <th class="px-3 py-3 font-bold border-r">Jurusan</th>
+                                <th class="px-3 py-3 font-bold border-r">Buta Warna</th>
+                                <th class="px-3 py-3 font-bold border-r">Tato</th>
+                                <th class="px-3 py-3 font-bold border-r">Tindik</th>
                                 <th class="px-3 py-3 font-bold border-r">Asal Sekolah</th>
                                 <th class="px-3 py-3 font-bold border-r">No. WA Siswa</th>
                                 <th class="px-3 py-3 font-bold border-r">NIK</th>
@@ -710,39 +898,115 @@
 
                 <div id="empty-state" class="text-center py-10 text-gray-400">
                     <i class="fas fa-folder-open text-4xl mb-2"></i>
-                    <p class="text-sm">Belum ada data pendaftar yang tersimpan.</p>
+                    <p class="text-sm">Belum ada data pendaftar yang tersimpan atau tersinkronkan.</p>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: INFORMASI & BANTUAN -->
+        <!-- TAB 3: INFORMASI & TUTORIAL GOOGLE SPREADSHEET SYNC -->
         <div id="info-tab" class="tab-content hidden space-y-6">
             <div class="google-card p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Informasi Pendaftaran SMK YPT 2 Purbalingga</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
-                    <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100">
-                        <h3 class="font-bold text-google-blue mb-2 flex items-center">
-                            <i class="fas fa-graduation-cap mr-2"></i>Kompetensi Keahlian (Jurusan)
-                        </h3>
-                        <ul class="list-disc list-inside space-y-1.5 text-xs text-gray-600">
-                            <li><b>TKR</b> - Teknik Kendaraan Ringan</li>
-                            <li><b>TSM</b> - Teknik Sepeda Motor</li>
-                            <li><b>TAV</b> - Teknik Audio Video</li>
-                            <li><b>TJKT</b> - Teknik Jaringan Komputer & Telekomunikasi</li>
-                            <li><b>DKV</b> - Desain Komunikasi Visual</li>
-                        </ul>
+                <h2 class="text-xl font-bold text-gray-800 mb-2 border-b pb-2 flex items-center">
+                    <i class="fab fa-google-drive text-emerald-600 mr-2"></i>
+                    Panduan Membuat Google Spreadsheet Realtime (0 Rupiah)
+                </h2>
+                <p class="text-xs text-gray-600 mb-6">
+                    Ikuti langkah singkat berikut untuk menghubungkan formulir pendaftaran ini secara gratis ke Google Sheets Anda. Setiap pendaftar online akan langsung tercatat otomatis di Google Sheets.
+                </p>
+
+                <div class="space-y-6 text-sm text-gray-700">
+                    <!-- Step 1 -->
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
+                        <div class="font-bold text-google-blue mb-1 flex items-center">
+                            <span class="w-6 h-6 rounded-full bg-google-blue text-white flex items-center justify-center text-xs mr-2">1</span>
+                            Buat Google Sheets Baru
+                        </div>
+                        <p class="text-xs text-gray-600 ml-8">
+                            Buka <a href="https://sheets.google.com" target="_blank" class="text-blue-600 underline font-semibold">Google Sheets</a>, buat spreadsheet baru dengan nama misalnya <b>"SPMB SMK YPT 2 Purbalingga"</b>.
+                        </p>
                     </div>
 
-                    <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-100">
-                        <h3 class="font-bold text-amber-800 mb-2 flex items-center">
-                            <i class="fas fa-clipboard-check mr-2"></i>Langkah Setelah Mendaftar
-                        </h3>
-                        <ol class="list-decimal list-inside space-y-1.5 text-xs text-gray-600">
-                            <li>Cetak / Simpan berkas <b>PDF Bukti Pendaftaran</b>.</li>
-                            <li>Bawa berkas PDF + Fotocopy KK & Akta ke Panitia SPMB.</li>
-                            <li>Melakukan Verifikasi fisik & Pengukuran seragam di sekolah.</li>
+                    <!-- Step 2 -->
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
+                        <div class="font-bold text-google-blue mb-1 flex items-center">
+                            <span class="w-6 h-6 rounded-full bg-google-blue text-white flex items-center justify-center text-xs mr-2">2</span>
+                            Buka Ekstensi Apps Script
+                        </div>
+                        <p class="text-xs text-gray-600 ml-8">
+                            Di Google Sheets Anda, klik menu **Ekstensi** &gt; **Apps Script**. Hapus semua kode default, lalu tempel (*paste*) kode di bawah ini:
+                        </p>
+
+                        <!-- Code block box -->
+                        <div class="mt-3 ml-8 relative bg-gray-900 text-emerald-400 p-4 rounded-lg font-mono text-xs overflow-x-auto shadow-inner">
+                            <button onclick="copyAppsScriptCode()" class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-2.5 py-1 rounded text-xs">
+                                <i class="fas fa-copy mr-1"></i>Salin Kode
+                            </button>
+                            <pre id="apps-script-code-block">
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+  }
+  var headers = data[0];
+  var rows = data.slice(1);
+  var result = rows.map(function(row) {
+    var obj = {};
+    headers.forEach(function(header, index) {
+      obj[header] = row[index];
+    });
+    return obj;
+  });
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var payload = JSON.parse(e.postData.contents);
+  
+  if (sheet.getLastRow() === 0) {
+    var headers = Object.keys(payload);
+    sheet.appendRow(headers);
+  }
+  
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var row = headers.map(function(header) {
+    return payload[header] !== undefined ? payload[header] : "";
+  });
+  
+  sheet.appendRow(row);
+  return ContentService.createTextOutput(JSON.stringify({ status: "success", data: payload }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+</pre>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
+                        <div class="font-bold text-google-blue mb-1 flex items-center">
+                            <span class="w-6 h-6 rounded-full bg-google-blue text-white flex items-center justify-center text-xs mr-2">3</span>
+                            Terapkan Sebagai Aplikasi Web (Deploy)
+                        </div>
+                        <ol class="list-decimal list-inside text-xs text-gray-600 ml-8 space-y-1 mt-1">
+                            <li>Klik tombol biru <b>Terapkan (Deploy)</b> &gt; <b>Penerapan Baru (New deployment)</b>.</li>
+                            <li>Pilih Jenis: <b>Aplikasi Web (Web App)</b>.</li>
+                            <li>Akses (Who has access): Pilih <b>Siapa Saja (Anyone)</b>. *(Penting agar pendaftar tidak perlu login)*</li>
+                            <li>Klik **Terapkan (Deploy)** dan berikan izin akses Google Drive.</li>
+                            <li>Salin **URL Aplikasi Web** yang dihasilkan (awalan `https://script.google.com/macros/s/...`).</li>
                         </ol>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
+                        <div class="font-bold text-google-blue mb-1 flex items-center">
+                            <span class="w-6 h-6 rounded-full bg-google-blue text-white flex items-center justify-center text-xs mr-2">4</span>
+                            Tempelkan URL Webhook ke Sistem
+                        </div>
+                        <p class="text-xs text-gray-600 ml-8">
+                            Buka tab <b>Database Spreadsheet</b> di web ini, tempelkan URL tersebut ke dalam kolom **Google Apps Script Webhook URL**, lalu klik **Simpan & Hubungkan**. Seluruh pendaftar akan otomatis masuk ke Google Sheets secara realtime!
+                        </p>
                     </div>
                 </div>
             </div>
@@ -757,11 +1021,11 @@
                 <i class="fas fa-check-circle"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-800 mb-1">Pendaftaran Berhasil!</h3>
-            <p class="text-xs text-gray-500 mb-4">Data pendaftar telah berhasil tersimpan ke sistem.</p>
+            <p class="text-xs text-gray-500 mb-4">Data pendaftar telah berhasil tersimpan dan tersinkronkan.</p>
 
             <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-left">
                 <div class="text-xs text-blue-600 font-bold uppercase tracking-wider">Nomor Registrasi Pendaftaran:</div>
-                <div id="modal-reg-code" class="text-3xl font-extrabold text-google-blue mt-1 font-mono tracking-tight">TKR-001</div>
+                <div id="modal-reg-code" class="text-3xl font-extrabold text-google-blue mt-1 font-mono tracking-tight">TKR-27-001</div>
                 <div id="modal-student-name" class="text-sm font-semibold text-gray-800 mt-2">Ahmad Fauzi</div>
                 <div id="modal-student-school" class="text-xs text-gray-500">SMPN 1 Purbalingga</div>
             </div>
@@ -769,7 +1033,7 @@
             <div class="space-y-2">
                 <button id="btn-download-pdf-modal" onclick="downloadGeneratedPDF()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow flex items-center justify-center space-x-2 transition">
                     <i class="fas fa-file-pdf text-lg"></i>
-                    <span>Download PDF Bukti Pendaftaran</span>
+                    <span>Download Formulir Pendaftaran PDF</span>
                 </button>
 
                 <button onclick="printDirectly()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-2 transition">
@@ -784,47 +1048,54 @@
         </div>
     </div>
 
+    <!-- CUSTOM CONFIRMATION DIALOG MODAL -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl">
+            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xl mx-auto mb-3">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 id="confirm-title" class="text-lg font-bold text-gray-800 mb-2">Konfirmasi Hapus</h3>
+            <p id="confirm-message" class="text-xs text-gray-600 mb-5">Apakah Anda yakin ingin menghapus data ini?</p>
+
+            <div class="flex space-x-3">
+                <button id="confirm-btn-cancel" class="w-1/2 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs">
+                    Batal
+                </button>
+                <button id="confirm-btn-ok" class="w-1/2 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- OFF-SCREEN RENDER CONTAINER FOR PDF EXPORT -->
     <div id="pdf-render-container">
         <div id="pdf-template" style="padding: 14px 18px; background: #ffffff; color: #000000; font-family: 'Times New Roman', Times, serif; width: 720px; margin: 0; box-sizing: border-box; text-align: left; page-break-inside: avoid; break-inside: avoid;">
             
-            <!-- Kop Surat Resmi Menggunakan Gambar logoypt2.png -->
-            
-            <div style="border-bottom: 3px double #000000; padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; background: #ffffff; box-sizing: border-box;">
-                <!-- Logo Left Side dengan ukuran proporsional (80px) & margin kiri secukupnya -->
-                <div style="width: 80px; height: 80px; flex-shrink: 0; display: flex; items-center: justify-center; align-items: center; justify-content: center; margin-left: 10px; margin-right: 10px;">
-                    <img id="pdf-logo-img" src="logoypt2.png" crossorigin="anonymous" alt="Logo SMK YPT 2 Purbalingga" style="max-height: 80px; max-width: 80px; width: auto; height: auto; object-fit: contain;" onerror="this.onerror=null; this.src='https://placehold.co/150x150/0d47a1/ffffff?text=YPT+2';">
-                </div>
-
-                <!-- Header Text Center -->
-                <div style="flex-grow: 1; text-align: center; color: #000000;">
-                    <div style="font-size: 10pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">YAYASAN PENDIDIKAN TEKNOLOGI PURBALINGGA</div>
-                    <div style="font-size: 13.5pt; font-weight: bold; color: #0d47a1; margin: 1px 0;">SMK YPT 2 PURBALINGGA</div>
-                    <div style="font-size: 8pt; font-weight: bold;">TERAKREDITASI "A" (UNGGUL & BERKARAKTER)</div>
-                    <div style="font-size: 7.5pt; font-style: italic; color: #333; margin-top: 1px;">
-                        Jl. Mayjend Sungkono KM 3, Purbalingga, Jawa Tengah | Telp: (0281) 891234
-                    </div>
-                </div>
+            <!-- KOP SURAT OPTIMIZED FOR A4 SINGLE PAGE -->
+            <div id="pdf-kop-header" style="width: 100%; margin-bottom: 6px; border-bottom: 3px double #000; padding-bottom: 4px;">
+                <img src="kop.jpeg" id="pdf-kop-img" alt="Kop Surat SMK YPT 2 Purbalingga" style="width: 100%; height: auto; max-width: 100%; display: block; object-fit: contain;" onerror="renderFallbackKop(this);">
             </div>
 
-            <!-- Header Bukti Pendaftaran -->
-            <div style="text-align: center; margin-bottom: 6px;">
-                <h3 style="margin: 0; font-size: 11pt; text-decoration: underline; font-weight: bold; text-transform: uppercase;">
-                    BUKTI PENDAFTARAN PESERTA DIDIK BARU (SPMB)
+            <!-- JUDUL FORMULIR -->
+            <div style="text-align: center; margin-bottom: 8px;">
+                <h3 style="margin: 0; font-size: 11pt; text-decoration: underline; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                    FORMULIR PENDAFTARAN PESERTA DIDIK BARU (SPMB)
                 </h3>
-                <div style="font-size: 8.5pt; font-weight: bold; margin-top: 2px;">
+                <div style="font-size: 8pt; font-weight: bold; margin-top: 1px; color: #222;">
                     TAHUN AJARAN 2027/2028
                 </div>
-                <div style="display: inline-block; border: 1.5px solid #0d47a1; background-color: #e8f0fe; padding: 2px 12px; margin-top: 4px; border-radius: 4px;">
-                    <span style="font-size: 8pt; font-weight: bold; color: #333;">NO. REGISTRASI: </span>
-                    <span id="pdf-code" style="color: #0d47a1; font-size: 11.5pt; font-weight: bold; font-family: monospace;">-</span>
+                <div style="display: inline-block; border: 1.5px solid #0d47a1; background-color: #e8f0fe; padding: 2px 10px; margin-top: 3px; border-radius: 4px;">
+                    <span style="font-size: 7.5pt; font-weight: bold; color: #333;">NO. REGISTRASI: </span>
+                    <span id="pdf-code" style="color: #0d47a1; font-size: 10pt; font-weight: bold; font-family: monospace;">-</span>
                 </div>
             </div>
 
-            <!-- Tabel Detail Hasil Inputan -->
-            <table style="width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 6px;" border="1" cellpadding="2.5">
+
+            <!-- Tabel Detail Isi Hasil Inputan -->
+            <table style="width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 8px;" border="1" cellpadding="3">
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
                         A. DATA DIRI CALON SISWA
                     </th>
                 </tr>
@@ -838,7 +1109,7 @@
                 <tr><td>Alamat Lengkap</td><td id="pdf-5">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
                         B. DATA ORANG TUA / WALI
                     </th>
                 </tr>
@@ -849,7 +1120,7 @@
                 <tr><td>No. HP/WA Orang Tua</td><td id="pdf-30">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
                         C. AKADEMIK & JURUSAN PILIHAN
                     </th>
                 </tr>
@@ -860,35 +1131,35 @@
                 <tr><td>Sumber Informasi</td><td id="pdf-20">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
-                        D. DATA FISIK, KESEHATAN & PRESTASI
+                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                        D. DATA FISIK, CEK FISIK & KESEHATAN
                     </th>
                 </tr>
                 <tr><td>Ukuran Fisik Siswa</td><td id="pdf-21-24">-</td></tr>
+                <tr><td>Pemeriksaan Cek Fisik</td><td id="pdf-cek-fisik" style="font-weight: bold; color: #1557b0;">-</td></tr>
                 <tr><td>Jarak & Waktu Tempuh</td><td id="pdf-25-26">-</td></tr>
                 <tr><td>Riwayat Penyakit</td><td id="pdf-27">-</td></tr>
-                <tr><td>Prestasi yang Dimiliki</td><td id="pdf-28">-</td></tr>
-                <tr><td>Cita-Cita</td><td id="pdf-29">-</td></tr>
+                <tr><td>Prestasi & Cita-Cita</td><td id="pdf-28-29">-</td></tr>
             </table>
 
             <!-- Catatan Verifikasi -->
-            <div style="font-size: 7.5pt; color: #333; border: 1px dashed #666; padding: 4px 6px; margin-bottom: 6px; line-height: 1.2;">
-                <b>Petunjuk Verifikasi Pendaftaran:</b> Silakan cetak bukti pendaftaran ini dan serahkan ke Panitia SPMB SMK YPT 2 Purbalingga beserta lampiran fotocopy KK, Akta Kelahiran, dan Ijazah/SKL SMP untuk proses daftar ulang.
+            <div style="font-size: 7.5pt; color: #333; border: 1px dashed #666; padding: 5px 8px; margin-bottom: 8px; line-height: 1.3;">
+                <b>Petunjuk Verifikasi Pendaftaran:</b> Silakan cetak Formulir Pendaftaran ini dan serahkan ke Panitia SPMB SMK YPT 2 Purbalingga beserta lampiran fotocopy KK, Akta Kelahiran, dan Ijazah/SKL SMP untuk proses daftar ulang.
             </div>
 
-            <!-- Tanda Tangan Validation Area (Siswa & Panitia SPMB) -->
-            <div style="display: flex; justify-content: space-between; font-size: 8.5pt; margin-top: 4px; page-break-inside: avoid; break-inside: avoid;">
+            <!-- Tanda Tangan Validation Area -->
+            <div style="display: flex; justify-content: space-between; font-size: 8.5pt; margin-top: 6px; page-break-inside: avoid; break-inside: avoid;">
                 <div style="text-align: center; width: 42%;">
                     <div>Mengetahui,</div>
                     <div style="font-weight: bold;">Panitia SPMB SMK YPT 2</div>
-                    <div style="height: 38px;"></div>
+                    <div style="height: 40px;"></div>
                     <div>( ......................................... )</div>
                 </div>
 
                 <div style="text-align: center; width: 45%;">
                     <div>Purbalingga, <span id="pdf-date-now"></span></div>
                     <div style="font-weight: bold;">Calon Peserta Didik Baru</div>
-                    <div style="height: 38px;"></div>
+                    <div style="height: 40px;"></div>
                     <div id="pdf-signature-name" style="font-weight: bold; text-decoration: underline;">( ......................................... )</div>
                 </div>
             </div>
@@ -897,11 +1168,9 @@
     </div>
 
     <script>
-        // Global variables & Database counter initialized
         let currentStudentData = null;
         let studentsDatabase = JSON.parse(localStorage.getItem('spmb_students_db')) || [];
         
-        // Counter register per jurusan (TKR-001, TSM-001, TAV-001, TJKT-001, DKV-001)
         let regCounters = JSON.parse(localStorage.getItem('spmb_counters')) || {
             TKR: 1,
             TSM: 1,
@@ -915,10 +1184,38 @@
             const savedWebhook = localStorage.getItem('spmb_webhook_url');
             if (savedWebhook) {
                 document.getElementById('sheet_webhook_url').value = savedWebhook;
+                updateWebhookBadgeStatus(true);
+                fetchFromGoogleSheets();
+            } else {
+                updateWebhookBadgeStatus(false);
             }
+
+            setInterval(() => {
+                const webhook = localStorage.getItem('spmb_webhook_url');
+                if (webhook) {
+                    fetchFromGoogleSheets(false);
+                }
+            }, 30000);
         };
 
-        // Tab Switching Logic
+function renderFallbackKop(imgElem) {
+            const container = document.getElementById('pdf-kop-header');
+            if (container) {
+                container.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 4px;">
+                        <div style="width: 55px; height: 55px; background: #0d47a1; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10pt; border-radius: 4px; text-align: center;">YPT 2</div>
+                        <div style="text-align: center; flex-grow: 1; padding: 0 10px;">
+                            <h2 style="margin:0; font-size: 12pt; font-weight: bold; color: #0d47a1;">YAYASAN PENDIDIKAN TEKNOLOGI (YPT) PURBALINGGA</h2>
+                            <h1 style="margin:1px 0; font-size: 14pt; font-weight: font-black; color: #000;">SMK YPT 2 PURBALINGGA</h1>
+                            <p style="margin:0; font-size: 7pt; color: #333;">Jl Mayor jendral Sungkono Kilometer 3 Telepon / Fax (0281) 892407</p>
+                            <p style="margin:0; font-size: 7pt; color: #333;">Website: www.smkypt2purbalingga.sch.id | Email: smk_ypt2_pbg@yahoo.co.id</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
@@ -940,7 +1237,6 @@
             menu.classList.toggle('hidden');
         }
 
-        // Custom school selection handler
         function toggleSekolahLainnya() {
             const select = document.getElementById('field_16_asal_sekolah_select');
             const customInput = document.getElementById('field_16_sekolah_custom');
@@ -953,7 +1249,6 @@
             }
         }
 
-        // Card None Checkbox
         function toggleKartuNone(checkbox) {
             if (checkbox.checked) {
                 document.querySelectorAll('.kartu-gov').forEach(cb => {
@@ -962,59 +1257,83 @@
             }
         }
 
-        // Webhook URL save
         function saveWebhookUrl() {
             const url = document.getElementById('sheet_webhook_url').value.trim();
+            if(!url) {
+                showToast('Silakan masukkan URL Webhook Apps Script!', 'warning');
+                return;
+            }
             localStorage.setItem('spmb_webhook_url', url);
-            showNotification('URL Webhook Google Sheets berhasil disimpan!');
+            updateWebhookBadgeStatus(true);
+            showToast('URL Google Sheets Webhook berhasil disimpan!');
+            fetchFromGoogleSheets(true);
         }
 
-        function showNotification(msg) {
+        function updateWebhookBadgeStatus(isConnected) {
+            const statusText = document.getElementById('webhook-info-status');
+            const cloudBadge = document.getElementById('cloud-status-badge');
+            const cloudSub = document.getElementById('cloud-last-sync');
+
+            if (isConnected) {
+                if (statusText) statusText.innerHTML = '<span class="text-emerald-700 font-bold"><i class="fas fa-check-circle mr-1"></i>Terhubung (Online Realtime)</span>';
+                if (cloudBadge) cloudBadge.innerText = 'Google Sheets Connected';
+                if (cloudSub) cloudSub.innerText = 'Sync Realtime Aktif';
+            } else {
+                if (statusText) statusText.innerHTML = '<span class="text-amber-700 font-bold"><i class="fas fa-exclamation-circle mr-1"></i>Belum Terhubung (Lokal Only)</span>';
+                if (cloudBadge) cloudBadge.innerText = 'Mode Database Lokal';
+                if (cloudSub) cloudSub.innerText = 'Belum Dihubungkan ke Sheets';
+            }
+        }
+
+        function showToast(msg, type = 'success') {
             const toast = document.createElement('div');
-            toast.className = 'fixed bottom-5 right-5 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-xl text-xs z-50 flex items-center space-x-2';
-            toast.innerHTML = `<i class="fas fa-check-circle text-emerald-400"></i><span>${msg}</span>`;
+            const bg = type === 'warning' ? 'bg-amber-800' : 'bg-gray-900';
+            const icon = type === 'warning' ? 'fa-exclamation-triangle text-amber-400' : 'fa-check-circle text-emerald-400';
+            
+            toast.className = `fixed bottom-5 right-5 ${bg} text-white px-4 py-3 rounded-xl shadow-2xl text-xs z-50 flex items-center space-x-2 transition transform translate-y-0`;
+            toast.innerHTML = `<i class="fas ${icon} text-base"></i><span>${msg}</span>`;
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            setTimeout(() => toast.remove(), 3500);
         }
 
-        // Form Submission Handler
         function handleFormSubmit(e) {
             e.preventDefault();
 
-            // Pilihan Jurusan Utama
             const jurusanRadio = document.querySelector('input[name="jurusan_utama"]:checked');
             if (!jurusanRadio) {
-                alert('Silakan pilih Jurusan Utama!');
+                showToast('Silakan pilih Jurusan Utama!', 'warning');
                 return;
             }
             const jurusan = jurusanRadio.value;
 
-            // Generate Kode Registrasi sesuai Jurusan
+            // Updated Registration Code Format: [Jurusan]-27-[No Urut] (Contoh: TKR-27-001)
             const currentNum = regCounters[jurusan] || 1;
-            const regCode = `${jurusan}-${String(currentNum).padStart(3, '0')}`;
+            const regCode = `${jurusan}-27-${String(currentNum).padStart(3, '0')}`;
 
-            // Increment counter untuk pendaftar jurusan berikutnya
             regCounters[jurusan] = currentNum + 1;
             localStorage.setItem('spmb_counters', JSON.stringify(regCounters));
 
-            // Extract Asal Sekolah
             const sekolahSelect = document.getElementById('field_16_asal_sekolah_select').value;
             const sekolahCustom = document.getElementById('field_16_sekolah_custom').value;
             const asalSekolah = sekolahSelect === 'Lainnya' ? sekolahCustom : sekolahSelect;
 
-            // Extract Kartu Bantuan
             const kartuGovList = [];
             document.querySelectorAll('.kartu-gov:checked').forEach(cb => kartuGovList.push(cb.value));
             const kartuGovStr = kartuGovList.length > 0 ? kartuGovList.join(', ') : 'Tidak Memiliki';
 
-            // Extract Sumber Info
             const infoList = [];
             document.querySelectorAll('.sumber-info:checked').forEach(cb => infoList.push(cb.value));
             const infoLainnya = document.getElementById('field_20_info_lainnya').value;
             if (infoLainnya) infoList.push(infoLainnya);
             const sumberInfoStr = infoList.length > 0 ? infoList.join(', ') : 'Lainnya';
 
-            // Construct Full Student Object
+            // Extracted values for separated RT & RW and Cek Fisik
+            const rtVal = document.getElementById('field_5_rt').value.trim();
+            const rwVal = document.getElementById('field_5_rw').value.trim();
+            const cekButaWarna = document.getElementById('field_cek_buta_warna').value;
+            const cekTato = document.getElementById('field_cek_tato').value;
+            const cekTindik = document.getElementById('field_cek_tindik').value;
+
             const student = {
                 noReg: regCode,
                 timestamp: new Date().toLocaleString('id-ID'),
@@ -1022,7 +1341,9 @@
                 field_2_jk: document.getElementById('field_2_jk').value,
                 field_3_tempat_lahir: document.getElementById('field_3_tempat_lahir').value.trim(),
                 field_4_tgl_lahir: document.getElementById('field_4_tgl_lahir').value,
-                field_5_rtrw: document.getElementById('field_5_rtrw').value.trim(),
+                field_5_rt: rtVal,
+                field_5_rw: rwVal,
+                field_5_rtrw: `RT ${rtVal} / RW ${rwVal}`,
                 field_5_desa: document.getElementById('field_5_desa').value.trim(),
                 field_5_kecamatan: document.getElementById('field_5_kecamatan').value.trim(),
                 field_5_kota: document.getElementById('field_5_kota').value.trim(),
@@ -1048,6 +1369,9 @@
                 field_22_berat: document.getElementById('field_22_berat').value,
                 field_23_lingkar_kepala: document.getElementById('field_23_lingkar_kepala').value,
                 field_24_ukuran_sepatu: document.getElementById('field_24_ukuran_sepatu').value,
+                field_cek_buta_warna: cekButaWarna,
+                field_cek_tato: cekTato,
+                field_cek_tindik: cekTindik,
                 field_25_jarak: document.getElementById('field_25_jarak').value,
                 field_26_waktu: document.getElementById('field_26_waktu').value,
                 field_27_penyakit: document.getElementById('field_27_penyakit').value.trim() || 'Tidak ada',
@@ -1056,20 +1380,17 @@
                 field_30_hp_ortu: document.getElementById('field_30_hp_ortu').value.trim()
             };
 
-            // Save to Database
             studentsDatabase.unshift(student);
             localStorage.setItem('spmb_students_db', JSON.stringify(studentsDatabase));
 
             currentStudentData = student;
 
-            // Optional Webhook Sync
             postToGoogleSheets(student);
 
             renderTable();
             openSuccessModal(student);
         }
 
-        // Post Data to Google Sheets Webhook
         function postToGoogleSheets(studentData) {
             const webhookUrl = localStorage.getItem('spmb_webhook_url');
             if (!webhookUrl) return;
@@ -1079,10 +1400,38 @@
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(studentData)
-            }).catch(err => console.error('Sheet sync error:', err));
+            })
+            .then(() => {
+                showToast('Data berhasil disinkronkan ke Google Sheets!');
+            })
+            .catch(err => console.error('Sheet sync error:', err));
         }
 
-        // Modal Controls
+        function fetchFromGoogleSheets(showNotification = false) {
+            const webhookUrl = localStorage.getItem('spmb_webhook_url');
+            if (!webhookUrl) return;
+
+            const spinner = document.getElementById('sync-spinner');
+            if (spinner) spinner.classList.remove('hidden');
+
+            fetch(webhookUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        studentsDatabase = data;
+                        localStorage.setItem('spmb_students_db', JSON.stringify(studentsDatabase));
+                        renderTable();
+                        if (showNotification) showToast(`Berhasil memperbarui ${data.length} data pendaftar dari Google Sheets!`);
+                    }
+                })
+                .catch(err => {
+                    console.log('Realtime fetch status:', err);
+                })
+                .finally(() => {
+                    if (spinner) spinner.classList.add('hidden');
+                });
+        }
+
         function openSuccessModal(student) {
             document.getElementById('modal-reg-code').innerText = student.noReg;
             document.getElementById('modal-student-name').innerText = student.field_1_nama;
@@ -1096,13 +1445,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Populate PDF Printable Element with form inputs
         function preparePDFData(data) {
             document.getElementById('pdf-code').innerText = data.noReg;
             document.getElementById('pdf-1').innerText = data.field_1_nama;
             document.getElementById('pdf-2').innerText = data.field_2_jk;
             document.getElementById('pdf-3-4').innerText = `${data.field_3_tempat_lahir}, ${data.field_4_tgl_lahir}`;
-            document.getElementById('pdf-5').innerText = `RT ${data.field_5_rtrw}, Desa ${data.field_5_desa}, Kec. ${data.field_5_kecamatan}, ${data.field_5_kota}, ${data.field_5_provinsi}`;
+            
+            // Format RT & RW terpisah pada tampilan PDF
+            const rtDisplay = data.field_5_rt || '-';
+            const rwDisplay = data.field_5_rw || '-';
+            document.getElementById('pdf-5').innerText = `RT ${rtDisplay} / RW ${rwDisplay}, Desa ${data.field_5_desa || '-'}, Kec. ${data.field_5_kecamatan || '-'}, ${data.field_5_kota || 'Purbalingga'}, ${data.field_5_provinsi || 'Jawa Tengah'}`;
+            
             document.getElementById('pdf-6').innerText = data.field_6_hp_siswa;
             document.getElementById('pdf-7').innerText = data.field_7_no_kk;
             document.getElementById('pdf-8').innerText = data.field_8_nik;
@@ -1121,16 +1474,21 @@
             document.getElementById('pdf-20').innerText = data.field_20_sumber_info;
 
             document.getElementById('pdf-21-24').innerText = `Tinggi: ${data.field_21_tinggi} cm | Berat: ${data.field_22_berat} kg | Lingkar Kepala: ${data.field_23_lingkar_kepala} cm | Sepatu: ${data.field_24_ukuran_sepatu}`;
+            
+            // Format status Cek Fisik pada PDF
+            const butaWarnaVal = data.field_cek_buta_warna || 'Belum di cek';
+            const tatoVal = data.field_cek_tato || 'Belum di cek';
+            const tindikVal = data.field_cek_tindik || 'Belum di cek';
+            document.getElementById('pdf-cek-fisik').innerText = `Buta Warna: ${butaWarnaVal} | Tato: ${tatoVal} | Tindik: ${tindikVal}`;
+
             document.getElementById('pdf-25-26').innerText = `Jarak: ${data.field_25_jarak} KM | Waktu: ${data.field_26_waktu} Menit`;
             document.getElementById('pdf-27').innerText = data.field_27_penyakit;
-            document.getElementById('pdf-28').innerText = data.field_28_prestasi;
-            document.getElementById('pdf-29').innerText = data.field_29_cita_cita;
+            document.getElementById('pdf-28-29').innerText = `Prestasi: ${data.field_28_prestasi} | Cita-cita: ${data.field_29_cita_cita}`;
 
             document.getElementById('pdf-date-now').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             document.getElementById('pdf-signature-name').innerText = `( ${data.field_1_nama} )`;
         }
 
-        // Direct Browser Print Fallback
         function printDirectly(studentData = null) {
             const data = studentData || currentStudentData;
             if (!data) return;
@@ -1138,15 +1496,13 @@
             window.print();
         }
 
-        // Export PDF Execution Handler with html2pdf
         function downloadGeneratedPDF(studentData = null) {
             const data = studentData || currentStudentData;
             if (!data) {
-                showNotification('Data pendaftar tidak ditemukan.');
+                showToast('Data pendaftar tidak ditemukan.', 'warning');
                 return;
             }
 
-            // Fill all values inside template
             preparePDFData(data);
 
             const container = document.getElementById('pdf-render-container');
@@ -1160,13 +1516,9 @@
                 btn.disabled = true;
             }
 
-            // Save current scroll position
             const savedScrollY = window.scrollY;
-
-            // Temporarily scroll to top so html2canvas renders coordinates accurately without empty offsets
             window.scrollTo(0, 0);
 
-            // Stage render container at page origin (0,0) with high z-index and explicit white background
             container.style.position = 'absolute';
             container.style.left = '0px';
             container.style.top = '0px';
@@ -1175,7 +1527,7 @@
             container.style.zIndex = '999999';
             container.style.background = '#ffffff';
 
-            const safeFileName = `SPMB_SMKYPT2_${data.noReg}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+            const safeFileName = `Formulir_Pendaftaran_${data.noReg}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
             const opt = {
                 margin:       [8, 8, 8, 8],
@@ -1196,13 +1548,12 @@
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            // Delay screenshot slightly to ensure full DOM paint & logo image render
             setTimeout(() => {
                 if (typeof html2pdf !== 'undefined') {
                     html2pdf().set(opt).from(element).save().then(() => {
                         resetPdfContainer();
                     }).catch(err => {
-                        console.warn('html2pdf capture error, falling back to print window:', err);
+                        console.warn('html2pdf capture error:', err);
                         resetPdfContainer();
                         window.print();
                     });
@@ -1220,7 +1571,6 @@
                 container.style.visibility = 'hidden';
                 container.style.zIndex = '-1';
                 
-                // Restore original user scroll position
                 window.scrollTo(0, savedScrollY);
 
                 if (btn) {
@@ -1230,7 +1580,6 @@
             }
         }
 
-        // Render Student Database Table
         function renderTable() {
             const tbody = document.getElementById('student-table-body');
             const emptyState = document.getElementById('empty-state');
@@ -1240,90 +1589,130 @@
             tbody.innerHTML = '';
 
             const filtered = studentsDatabase.filter(item => {
-                const matchesSearch = item.field_1_nama.toLowerCase().includes(search) ||
-                                      item.noReg.toLowerCase().includes(search) ||
-                                      item.field_8_nik.includes(search) ||
-                                      item.field_16_asal_sekolah.toLowerCase().includes(search);
-                const matchesJurusan = filterJurusan ? item.field_19_jurusan === filterJurusan : true;
+                const nama = item.field_1_nama ? item.field_1_nama.toLowerCase() : '';
+                const reg = item.noReg ? item.noReg.toLowerCase() : '';
+                const nik = item.field_8_nik ? item.field_8_nik : '';
+                const sekolah = item.field_16_asal_sekolah ? item.field_16_asal_sekolah.toLowerCase() : '';
+
+                const matchesSearch = nama.includes(search) || reg.includes(search) || nik.includes(search) || sekolah.includes(search);
+                const matchesJurusan = filterJurusan === '' || item.field_19_jurusan === filterJurusan;
+
                 return matchesSearch && matchesJurusan;
             });
 
             if (filtered.length === 0) {
-                emptyState.classList.remove('hidden');
+                if (emptyState) emptyState.classList.remove('hidden');
+                return;
             } else {
-                emptyState.classList.add('hidden');
-                filtered.forEach((item, index) => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-blue-50/50 transition';
-                    tr.innerHTML = `
-                        <td class="px-3 py-2.5 font-bold text-google-blue border-r font-mono">${item.noReg}</td>
-                        <td class="px-3 py-2.5 font-semibold text-gray-800 border-r">${item.field_1_nama}</td>
-                        <td class="px-3 py-2.5 border-r">${item.field_2_jk}</td>
-                        <td class="px-3 py-2.5 border-r font-bold">${item.field_19_jurusan}</td>
-                        <td class="px-3 py-2.5 border-r">${item.field_16_asal_sekolah}</td>
-                        <td class="px-3 py-2.5 border-r">${item.field_6_hp_siswa}</td>
-                        <td class="px-3 py-2.5 border-r font-mono text-xs">${item.field_8_nik}</td>
-                        <td class="px-3 py-2.5 text-center">
-                            <button onclick="downloadPDFByIndex(${index})" title="Export PDF" class="px-2.5 py-1 bg-google-blue text-white rounded text-xs hover:bg-google-hover transition font-medium">
-                                <i class="fas fa-file-pdf mr-1"></i> PDF
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                if (emptyState) emptyState.classList.add('hidden');
             }
+
+            filtered.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-white hover:bg-blue-50/50' : 'bg-gray-50/50 hover:bg-blue-50/50';
+
+                tr.innerHTML = `
+                    <td class="px-3 py-2.5 font-bold text-google-blue font-mono border-r">${item.noReg || '-'}</td>
+                    <td class="px-3 py-2.5 font-semibold text-gray-800 border-r">${item.field_1_nama || '-'}</td>
+                    <td class="px-3 py-2.5 border-r">${item.field_2_jk === 'Laki-laki' ? 'L' : 'P'}</td>
+                    <td class="px-3 py-2.5 border-r font-bold">${item.field_19_jurusan || '-'}</td>
+                    <td class="px-3 py-2.5 border-r">${item.field_cek_buta_warna || 'Belum'}</td>
+                    <td class="px-3 py-2.5 border-r">${item.field_cek_tato || 'Belum'}</td>
+                    <td class="px-3 py-2.5 border-r">${item.field_cek_tindik || 'Belum'}</td>
+                    <td class="px-3 py-2.5 border-r">${item.field_16_asal_sekolah || '-'}</td>
+                    <td class="px-3 py-2.5 border-r">${item.field_6_hp_siswa || '-'}</td>
+                    <td class="px-3 py-2.5 border-r font-mono">${item.field_8_nik || '-'}</td>
+                    <td class="px-3 py-2.5 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <button onclick='downloadGeneratedPDF(${JSON.stringify(item).replace(/'/g, "&apos;")})' title="Cetak/PDF" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded">
+                                <i class="fas fa-print text-sm"></i>
+                            </button>
+                            <button onclick='confirmDeleteStudent("${item.noReg}")' title="Hapus" class="p-1.5 text-red-600 hover:bg-red-100 rounded">
+                                <i class="fas fa-trash-alt text-sm"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function downloadPDFByIndex(index) {
-            downloadGeneratedPDF(studentsDatabase[index]);
+        let studentToDelete = null;
+
+        function confirmDeleteStudent(noReg) {
+            studentToDelete = noReg;
+            document.getElementById('confirm-title').innerText = 'Konfirmasi Hapus Data';
+            document.getElementById('confirm-message').innerText = `Apakah Anda yakin ingin menghapus data dengan Nomor Registrasi ${noReg}?`;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+
+            document.getElementById('confirm-btn-ok').onclick = function() {
+                deleteStudent(studentToDelete);
+                document.getElementById('confirm-modal').classList.add('hidden');
+            };
+            document.getElementById('confirm-btn-cancel').onclick = function() {
+                document.getElementById('confirm-modal').classList.add('hidden');
+            };
         }
 
-        // Export CSV Database
+        function deleteStudent(noReg) {
+            studentsDatabase = studentsDatabase.filter(s => s.noReg !== noReg);
+            localStorage.setItem('spmb_students_db', JSON.stringify(studentsDatabase));
+            renderTable();
+            showToast(`Data ${noReg} telah berhasil dihapus.`);
+        }
+
+        function promptClearAllData() {
+            document.getElementById('confirm-title').innerText = 'Konfirmasi Reset Lokal';
+            document.getElementById('confirm-message').innerText = 'Apakah Anda yakin ingin menghapus SELURUH data lokal di browser ini? Data di Google Sheets tidak akan terhapus.';
+            document.getElementById('confirm-modal').classList.remove('hidden');
+
+            document.getElementById('confirm-btn-ok').onclick = function() {
+                localStorage.removeItem('spmb_students_db');
+                studentsDatabase = [];
+                renderTable();
+                document.getElementById('confirm-modal').classList.add('hidden');
+                showToast('Seluruh data lokal berhasil dibersihkan.');
+            };
+            document.getElementById('confirm-btn-cancel').onclick = function() {
+                document.getElementById('confirm-modal').classList.add('hidden');
+            };
+        }
+
         function exportToCSV() {
             if (studentsDatabase.length === 0) {
-                alert('Belum ada data pendaftar untuk di-export!');
+                showToast('Tidak ada data untuk diexport!', 'warning');
                 return;
             }
 
-            const headers = [
-                "No Registrasi", "Tanggal Input", "Nama Lengkap", "Jenis Kelamin", "Tempat Lahir", "Tanggal Lahir",
-                "RT/RW", "Desa", "Kecamatan", "Kota", "Provinsi", "No WA Siswa", "No KK", "NIK Pendaftar",
-                "Nama Ayah", "NIK Ayah", "Pekerjaan Ayah", "Penghasilan Ayah", "Nama Ibu", "NIK Ibu", "Pekerjaan Ibu", "Penghasilan Ibu", "Agama",
-                "Asal Sekolah", "Tahun Lulus", "Kartu Bantuan", "Pilihan Jurusan", "Sumber Info",
-                "Tinggi Badan (cm)", "Berat Badan (kg)", "Lingkar Kepala (cm)", "Ukuran Sepatu",
-                "Jarak Tempuh (km)", "Waktu Tempuh (min)", "Riwayat Penyakit", "Prestasi", "Cita-Cita", "No WA Ortu"
-            ];
+            const headers = Object.keys(studentsDatabase[0]);
+            let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
 
-            const rows = studentsDatabase.map(s => [
-                `"${s.noReg}"`, `"${s.timestamp}"`, `"${s.field_1_nama}"`, `"${s.field_2_jk}"`, `"${s.field_3_tempat_lahir}"`, `"${s.field_4_tgl_lahir}"`,
-                `"${s.field_5_rtrw}"`, `"${s.field_5_desa}"`, `"${s.field_5_kecamatan}"`, `"${s.field_5_kota}"`, `"${s.field_5_provinsi}"`,
-                `"${s.field_6_hp_siswa}"`, `"${s.field_7_no_kk}"`, `"${s.field_8_nik}"`,
-                `"${s.field_9_nama_ayah}"`, `"${s.field_10_nik_ayah}"`, `"${s.field_11_pekerjaan_ayah}"`, `"${s.field_11b_penghasilan_ayah || '-'}"`,
-                `"${s.field_12_nama_ibu}"`, `"${s.field_13_nik_ibu}"`, `"${s.field_14_pekerjaan_ibu}"`, `"${s.field_14b_penghasilan_ibu || '-'}"`,
-                `"${s.field_15_agama}"`, `"${s.field_16_asal_sekolah}"`, `"${s.field_17_tahun_lulus}"`,
-                `"${s.field_18_kartu_pemerintah}"`, `"${s.field_19_jurusan}"`, `"${s.field_20_sumber_info}"`,
-                `"${s.field_21_tinggi}"`, `"${s.field_22_berat}"`, `"${s.field_23_lingkar_kepala}"`, `"${s.field_24_ukuran_sepatu}"`,
-                `"${s.field_25_jarak}"`, `"${s.field_26_waktu}"`, `"${s.field_27_penyakit}"`, `"${s.field_28_prestasi}"`, `"${s.field_29_cita_cita}"`, `"${s.field_30_hp_ortu}"`
-            ]);
+            studentsDatabase.forEach(row => {
+                const values = headers.map(header => {
+                    const val = row[header] !== undefined ? String(row[header]).replace(/"/g, '""') : '';
+                    return `"${val}"`;
+                });
+                csvContent += values.join(",") + "\n";
+            });
 
-            const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `SPMB_SMK_YPT_2_Purbalingga_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `Data_SPMB_SMK_YPT_2_Purbalingga_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // Clear Local Database
-        function clearAllData() {
-            if (confirm('Apakah Anda yakin ingin menghapus semua data pendaftar dari database lokal?')) {
-                studentsDatabase = [];
-                localStorage.removeItem('spmb_students_db');
-                renderTable();
-                showNotification('Database lokal telah dibersihkan.');
-            }
+        function copyAppsScriptCode() {
+            const codeText = document.getElementById('apps-script-code-block').innerText;
+            const tempArea = document.createElement('textarea');
+            tempArea.value = codeText;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempArea);
+            showToast('Kode Google Apps Script berhasil disalin!');
         }
     </script>
 </body>
