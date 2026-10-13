@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Roboto & Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- html2pdf.js for PDF Export -->
+    <!-- html2pdf.js for Direct PDF Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
@@ -70,16 +70,15 @@
             box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
         }
 
-        /* Printable PDF Template container styling */
+        /* Hidden PDF Container for clean rendering */
         #pdf-render-container {
             position: absolute;
             left: -9999px;
             top: 0;
-            width: 750px;
+            width: 780px;
             background: #ffffff;
-            z-index: -1;
+            z-index: -100;
             opacity: 0;
-            visibility: hidden;
             pointer-events: none;
             box-sizing: border-box;
         }
@@ -125,7 +124,6 @@
     <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 flex justify-between items-center h-16">
             <div class="flex items-center space-x-3">
-                <!-- Official Logo PNG SMK YPT 2 Purbalingga -->
                 <div class="w-12 h-12 flex items-center justify-center shrink-0">
                     <img src="logoypt2.png" alt="Logo SMK YPT 2 Purbalingga" class="max-h-full max-w-full object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='https://placehold.co/120x120/0d47a1/ffffff?text=YPT+2';">
                 </div>
@@ -287,19 +285,19 @@
                             <input type="tel" id="field_6_hp_siswa" required placeholder="08xxxxxxxxxx" class="input-google">
                         </div>
 
-                        <!-- Alamat Lengkap -->
+                        <!-- Alamat Lengkap (RT & RW Terpisah) -->
                         <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
                             <label class="block text-sm font-semibold text-gray-800 mb-2">Alamat Lengkap Tempat Tinggal <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                                 <div>
                                     <label class="text-xs text-gray-600 block mb-1">RT <span class="text-red-500">*</span></label>
-                                    <input type="text" id="field_5_rt" required placeholder="002" class="input-google text-sm">
+                                    <input type="text" id="field_5_rt" required placeholder="001" class="input-google text-sm">
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 block mb-1">RW <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_rw" required placeholder="005" class="input-google text-sm">
                                 </div>
-                                <div>
+                                <div class="col-span-2 sm:col-span-1">
                                     <label class="text-xs text-gray-600 block mb-1">Desa / Kelurahan <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_desa" required placeholder="Nama Desa" class="input-google text-sm">
                                 </div>
@@ -311,7 +309,7 @@
                                     <label class="text-xs text-gray-600 block mb-1">Kota / Kabupaten <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_kota" required value="Purbalingga" class="input-google text-sm">
                                 </div>
-                                <div class="sm:col-span-2 lg:col-span-3">
+                                <div class="col-span-2 sm:col-span-2">
                                     <label class="text-xs text-gray-600 block mb-1">Provinsi <span class="text-red-500">*</span></label>
                                     <input type="text" id="field_5_provinsi" required value="Jawa Tengah" class="input-google text-sm">
                                 </div>
@@ -428,121 +426,21 @@
                                 <option value="MTs Ma'arif NU 3 Rembang">MTs Ma'arif NU 3 Rembang</option>
                                 <option value="MTs Ma'arif NU 5 Majasari">MTs Ma'arif NU 5 Majasari</option>
                                 <option value="MTs Ma'arif NU 6 Bojongsari">MTs Ma'arif NU 6 Bojongsari</option>
-                                <option value="MTs Maarif NU 1 Kembaran">MTs Maarif NU 1 Kembaran</option>
-                                <option value="MTs Maarif NU 1 Kemranjem">MTs Maarif NU 1 Kemranjem</option>
-                                <option value="MTs Maarif NU 1 Sokaraja">MTs Maarif NU 1 Sokaraja</option>
-                                <option value="MTs Maarif NU 10 Krenceng">MTs Maarif NU 10 Krenceng</option>
-                                <option value="MTs Maarif NU Purworejo">MTs Maarif NU Purworejo</option>
-                                <option value="MTs Manhalul Ahbaab Pakujati Brebes">MTs Manhalul Ahbaab Pakujati Brebes</option>
-                                <option value="MTs Minhajut Tholabah Bukateja">MTs Minhajut Tholabah Bukateja</option>
-                                <option value="MTs Minthol Lawi Gede">MTs Minthol Lawi Gede</option>
-                                <option value="MTs Muhammadiyah 01 Purbalingga">MTs Muhammadiyah 01 Purbalingga</option>
-                                <option value="MTs Muhammadiyah 02 Bukateja">MTs Muhammadiyah 02 Bukateja</option>
-                                <option value="MTs Muhammadiyah 04 Purbalingga">MTs Muhammadiyah 04 Purbalingga</option>
-                                <option value="MTs Muhammadiyah 06 Purbalingga">MTs Muhammadiyah 06 Purbalingga</option>
-                                <option value="MTs Muhammadiyah 08 Kemangkon">MTs Muhammadiyah 08 Kemangkon</option>
-                                <option value="MTs Muhammadiyah 10 Gembong">MTs Muhammadiyah 10 Gembong</option>
-                                <option value="MTs Negeri 1 Banyumas">MTs Negeri 1 Banyumas</option>
-                                <option value="MTs Negeri 1 Pekalongan">MTs Negeri 1 Pekalongan</option>
                                 <option value="MTs Negeri 1 Purbalingga">MTs Negeri 1 Purbalingga</option>
                                 <option value="MTs Negeri 2 Purbalingga">MTs Negeri 2 Purbalingga</option>
-                                <option value="MTs Negeri 3 Banyumas">MTs Negeri 3 Banyumas</option>
                                 <option value="MTs Negeri 3 Purbalingga">MTs Negeri 3 Purbalingga</option>
-                                <option value="MTs Nurul Barokah">MTs Nurul Barokah</option>
-                                <option value="MTs Nurul Huda Patimuan">MTs Nurul Huda Patimuan</option>
-                                <option value="MTs Nurul Huda Pesanggrahan">MTs Nurul Huda Pesanggrahan</option>
-                                <option value="MTs PPPI Miftahussalam Banyumas">MTs PPPI Miftahussalam Banyumas</option>
-                                <option value="MTs Ushriyah Purbalingga">MTs Ushriyah Purbalingga</option>
-                                <option value="MTs Wathoniyah Islamiyah Kebarongan">MTs Wathoniyah Islamiyah Kebarongan</option>
-                                <option value="MTs Yinuba Bojongsari">MTs Yinuba Bojongsari</option>
-                                <option value="Paket B">Paket B</option>
-                                <option value="SMP Abdi Negara 1 Kaligondang">SMP Abdi Negara 1 Kaligondang</option>
-                                <option value="SMP Al Irsyad Batu">SMP Al Irsyad Batu</option>
-                                <option value="SMP Al-Ashriyah Nurul Iman Parung Bogor">SMP Al-Ashriyah Nurul Iman Parung Bogor</option>
-                                <option value="SMP Arrahman Depok">SMP Arrahman Depok</option>
-                                <option value="SMP Eka Tjipta Kencana">SMP Eka Tjipta Kencana</option>
-                                <option value="SMP Islam Andalusia Kebasen">SMP Islam Andalusia Kebasen</option>
-                                <option value="SMP Islam Manhalul Nasyiin">SMP Islam Manhalul Nasyiin</option>
-                                <option value="SMP Islam Ngadirejo Temanggung">SMP Islam Ngadirejo Temanggung</option>
-                                <option value="SMP Islam Walisongo">SMP Islam Walisongo</option>
-                                <option value="SMP Muhammadiyah 01 Purbalingga">SMP Muhammadiyah 01 Purbalingga</option>
-                                <option value="SMP Muhammadiyah 08 Kemangkon">SMP Muhammadiyah 08 Kemangkon</option>
-                                <option value="SMP Muhammadiyah 1 Mlati">SMP Muhammadiyah 1 Mlati</option>
-                                <option value="SMP Muhammadiyah Boarding School Zam-zam Cilongok">SMP Muhammadiyah Boarding School Zam-zam Cilongok</option>
-                                <option value="SMP Muhammadiyah Cilongok">SMP Muhammadiyah Cilongok</option>
-                                <option value="SMP Muhammadiyah Kembaran">SMP Muhammadiyah Kembaran</option>
-                                <option value="SMP Muhammadiyah Kramat">SMP Muhammadiyah Kramat</option>
-                                <option value="SMP Muhammadiyah Sokaraja">SMP Muhammadiyah Sokaraja</option>
-                                <option value="SMP Negeri 1 Banyumas">SMP Negeri 1 Banyumas</option>
-                                <option value="SMP Negeri 1 Bojongsari">SMP Negeri 1 Bojongsari</option>
-                                <option value="SMP Negeri 1 Bukateja">SMP Negeri 1 Bukateja</option>
-                                <option value="SMP Negeri 1 Ciomas">SMP Negeri 1 Ciomas</option>
-                                <option value="SMP Negeri 1 Gunung Putri Bogor">SMP Negeri 1 Gunung Putri Bogor</option>
-                                <option value="SMP Negeri 1 Kalibagor">SMP Negeri 1 Kalibagor</option>
-                                <option value="SMP Negeri 1 Kaligondang">SMP Negeri 1 Kaligondang</option>
-                                <option value="SMP Negeri 1 Kalimanah">SMP Negeri 1 Kalimanah</option>
-                                <option value="SMP Negeri 1 Karangjambu">SMP Negeri 1 Karangjambu</option>
-                                <option value="SMP Negeri 1 Karangmoncol">SMP Negeri 1 Karangmoncol</option>
-                                <option value="SMP Negeri 1 Karangreja">SMP Negeri 1 Karangreja</option>
-                                <option value="SMP Negeri 1 Kemangkon">SMP Negeri 1 Kemangkon</option>
-                                <option value="SMP Negeri 1 Kembaran">SMP Negeri 1 Kembaran</option>
-                                <option value="SMP Negeri 1 Kuantan Mudik">SMP Negeri 1 Kuantan Mudik</option>
-                                <option value="SMP Negeri 1 Kutasari">SMP Negeri 1 Kutasari</option>
-                                <option value="SMP Negeri 1 Manokwari">SMP Negeri 1 Manokwari</option>
-                                <option value="SMP Negeri 1 Mrebet">SMP Negeri 1 Mrebet</option>
-                                <option value="SMP Negeri 1 Padamara">SMP Negeri 1 Padamara</option>
-                                <option value="SMP Negeri 1 Pengadegan">SMP Negeri 1 Pengadegan</option>
                                 <option value="SMP Negeri 1 Purbalingga">SMP Negeri 1 Purbalingga</option>
-                                <option value="SMP Negeri 1 Rembang">SMP Negeri 1 Rembang</option>
-                                <option value="SMP Negeri 1 Sokaraja">SMP Negeri 1 Sokaraja</option>
-                                <option value="SMP Negeri 1 Sumbang">SMP Negeri 1 Sumbang</option>
-                                <option value="SMP Negeri 1 Sumberbaru Jember">SMP Negeri 1 Sumberbaru Jember</option>
-                                <option value="SMP Negeri 2 Bojongsari">SMP Negeri 2 Bojongsari</option>
-                                <option value="SMP Negeri 2 Bukateja">SMP Negeri 2 Bukateja</option>
-                                <option value="SMP Negeri 2 Kalibagor">SMP Negeri 2 Kalibagor</option>
-                                <option value="SMP Negeri 2 Kaligondang">SMP Negeri 2 Kaligondang</option>
-                                <option value="SMP Negeri 2 Kalimanah">SMP Negeri 2 Kalimanah</option>
-                                <option value="SMP Negeri 2 Kejobong">SMP Negeri 2 Kejobong</option>
-                                <option value="SMP Negeri 2 Kemangkon">SMP Negeri 2 Kemangkon</option>
-                                <option value="SMP Negeri 2 Kembaran">SMP Negeri 2 Kembaran</option>
-                                <option value="SMP Negeri 2 Kutasari">SMP Negeri 2 Kutasari</option>
-                                <option value="SMP Negeri 2 Maesan">SMP Negeri 2 Maesan</option>
-                                <option value="SMP Negeri 2 Padamara">SMP Negeri 2 Padamara</option>
                                 <option value="SMP Negeri 2 Purbalingga">SMP Negeri 2 Purbalingga</option>
-                                <option value="SMP Negeri 2 Rembang">SMP Negeri 2 Rembang</option>
-                                <option value="SMP Negeri 2 Sokaraja">SMP Negeri 2 Sokaraja</option>
-                                <option value="SMP Negeri 2 Sumbang">SMP Negeri 2 Sumbang</option>
-                                <option value="SMP Negeri 2 Tangerang">SMP Negeri 2 Tangerang</option>
-                                <option value="SMP Negeri 3 Batam">SMP Negeri 3 Batam</option>
-                                <option value="SMP Negeri 3 Bobotsari">SMP Negeri 3 Bobotsari</option>
-                                <option value="SMP Negeri 3 Bukateja">SMP Negeri 3 Bukateja</option>
-                                <option value="SMP Negeri 3 Kalibagor">SMP Negeri 3 Kalibagor</option>
-                                <option value="SMP Negeri 3 Kalimanah">SMP Negeri 3 Kalimanah</option>
-                                <option value="SMP Negeri 3 Karangmoncol">SMP Negeri 3 Karangmoncol</option>
-                                <option value="SMP Negeri 3 Karangreja">SMP Negeri 3 Karangreja</option>
-                                <option value="SMP Negeri 3 Kemangkon">SMP Negeri 3 Kemangkon</option>
-                                <option value="SMP Negeri 3 Kutasari">SMP Negeri 3 Kutasari</option>
-                                <option value="SMP Negeri 3 Mrebet">SMP Negeri 3 Mrebet</option>
-                                <option value="SMP Negeri 3 Pengadegan">SMP Negeri 3 Pengadegan</option>
                                 <option value="SMP Negeri 3 Purbalingga">SMP Negeri 3 Purbalingga</option>
-                                <option value="SMP Negeri 3 Sokaraja">SMP Negeri 3 Sokaraja</option>
-                                <option value="SMP Negeri 4 Kalibagor">SMP Negeri 4 Kalibagor</option>
-                                <option value="SMP Negeri 4 Kemangkon">SMP Negeri 4 Kemangkon</option>
-                                <option value="SMP Negeri 4 Kutasari">SMP Negeri 4 Kutasari</option>
-                                <option value="SMP Negeri 4 Mukomuko Bengkulu">SMP Negeri 4 Mukomuko Bengkulu</option>
                                 <option value="SMP Negeri 4 Purbalingga">SMP Negeri 4 Purbalingga</option>
-                                <option value="SMP Negeri 4 Sumbang">SMP Negeri 4 Sumbang</option>
-                                <option value="SMP Negeri 5 Mrebet">SMP Negeri 5 Mrebet</option>
                                 <option value="SMP Negeri 5 Purbalingga">SMP Negeri 5 Purbalingga</option>
-                                <option value="SMP Negeri 6 Rembang">SMP Negeri 6 Rembang</option>
-                                <option value="SMP NU 1 Berbasis Pesantren Bojong Tegal">SMP NU 1 Berbasis Pesantren Bojong Tegal</option>
-                                <option value="SMP PGRI Baturaden">SMP PGRI Baturaden</option>
-                                <option value="SMP PGRI Sumbang">SMP PGRI Sumbang</option>
-                                <option value="SMP Sambas Istiqomah Purbalingga">SMP Sambas Istiqomah Purbalingga</option>
-                                <option value="SMP Santo Borromeus">SMP Santo Borromeus</option>
-                                <option value="SMP Tamtama">SMP Tamtama</option>
-                                <option value="SMP Yapensori">SMP Yapensori</option>
-
+                                <option value="SMP Negeri 1 Kalimanah">SMP Negeri 1 Kalimanah</option>
+                                <option value="SMP Negeri 2 Kalimanah">SMP Negeri 2 Kalimanah</option>
+                                <option value="SMP Negeri 3 Kalimanah">SMP Negeri 3 Kalimanah</option>
+                                <option value="SMP Negeri 1 Kutasari">SMP Negeri 1 Kutasari</option>
+                                <option value="SMP Negeri 2 Kutasari">SMP Negeri 2 Kutasari</option>
+                                <option value="SMP Negeri 1 Padamara">SMP Negeri 1 Padamara</option>
+                                <option value="SMP Negeri 2 Padamara">SMP Negeri 2 Padamara</option>
                                 <option value="Lainnya">Lainnya (Ketik Manual)...</option>
                             </select>
                             <input type="text" id="field_16_sekolah_custom" class="input-google mt-2 hidden" placeholder="Tuliskan Nama Sekolah Asal...">
@@ -598,7 +496,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 Pilihan Jurusan Utama <span class="text-red-500">*</span>
-                                <span class="text-xs font-normal text-blue-600 block">Nomor pendaftaran otomatis sesuai kode jurusan pilihan Anda (Format: Jurusan-27-001, contoh: TKR-27-001, TSM-27-001, TAV-27-001, TJKT-27-001, DKV-27-001)</span>
+                                <span class="text-xs font-normal text-blue-600 block">Nomor pendaftaran otomatis sesuai kode jurusan pilihan Anda (Contoh: TKR-27-001)</span>
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label class="border-2 border-gray-200 rounded-lg p-3 flex items-center space-x-3 cursor-pointer hover:border-google-blue hover:bg-blue-50/50 transition">
@@ -720,7 +618,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION 6: BAGIAN CEK FISIK KHUSUS -->
+                <!-- SECTION 6: BAGIAN CEK FISIK -->
                 <div class="google-card p-6 border-l-4 border-amber-500 bg-amber-50/20">
                     <div class="flex items-center space-x-2 border-b pb-3 mb-5 border-amber-200">
                         <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
@@ -933,7 +831,7 @@
                             Buka Ekstensi Apps Script
                         </div>
                         <p class="text-xs text-gray-600 ml-8">
-                            Di Google Sheets Anda, klik menu **Ekstensi** &gt; **Apps Script**. Hapus semua kode default, lalu tempel (*paste*) kode di bawah ini:
+                            Di Google Sheets Anda, klik menu <b>Ekstensi</b> &gt; <b>Apps Script</b>. Hapus semua kode default, lalu tempel (<i>paste</i>) kode di bawah ini:
                         </p>
 
                         <!-- Code block box -->
@@ -992,9 +890,9 @@ function doPost(e) {
                         <ol class="list-decimal list-inside text-xs text-gray-600 ml-8 space-y-1 mt-1">
                             <li>Klik tombol biru <b>Terapkan (Deploy)</b> &gt; <b>Penerapan Baru (New deployment)</b>.</li>
                             <li>Pilih Jenis: <b>Aplikasi Web (Web App)</b>.</li>
-                            <li>Akses (Who has access): Pilih <b>Siapa Saja (Anyone)</b>. *(Penting agar pendaftar tidak perlu login)*</li>
-                            <li>Klik **Terapkan (Deploy)** dan berikan izin akses Google Drive.</li>
-                            <li>Salin **URL Aplikasi Web** yang dihasilkan (awalan `https://script.google.com/macros/s/...`).</li>
+                            <li>Akses (Who has access): Pilih <b>Siapa Saja (Anyone)</b>.</li>
+                            <li>Klik <b>Terapkan (Deploy)</b> dan berikan izin akses Google Drive.</li>
+                            <li>Salin <b>URL Aplikasi Web</b> yang dihasilkan.</li>
                         </ol>
                     </div>
 
@@ -1005,7 +903,7 @@ function doPost(e) {
                             Tempelkan URL Webhook ke Sistem
                         </div>
                         <p class="text-xs text-gray-600 ml-8">
-                            Buka tab <b>Database Spreadsheet</b> di web ini, tempelkan URL tersebut ke dalam kolom **Google Apps Script Webhook URL**, lalu klik **Simpan & Hubungkan**. Seluruh pendaftar akan otomatis masuk ke Google Sheets secara realtime!
+                            Buka tab <b>Database Spreadsheet</b> di web ini, tempelkan URL tersebut ke dalam kolom <b>Google Apps Script Webhook URL</b>, lalu klik <b>Simpan & Hubungkan</b>.
                         </p>
                     </div>
                 </div>
@@ -1033,7 +931,7 @@ function doPost(e) {
             <div class="space-y-2">
                 <button id="btn-download-pdf-modal" onclick="downloadGeneratedPDF()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow flex items-center justify-center space-x-2 transition">
                     <i class="fas fa-file-pdf text-lg"></i>
-                    <span>Download Formulir Pendaftaran PDF</span>
+                    <span>Download PDF Bukti Pendaftaran</span>
                 </button>
 
                 <button onclick="printDirectly()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-2 transition">
@@ -1070,11 +968,11 @@ function doPost(e) {
 
     <!-- OFF-SCREEN RENDER CONTAINER FOR PDF EXPORT -->
     <div id="pdf-render-container">
-        <div id="pdf-template" style="padding: 14px 18px; background: #ffffff; color: #000000; font-family: 'Times New Roman', Times, serif; width: 720px; margin: 0; box-sizing: border-box; text-align: left; page-break-inside: avoid; break-inside: avoid;">
+        <div id="pdf-template" style="padding: 14px 18px; background: #ffffff; color: #000000; font-family: 'Times New Roman', Times, serif; width: 720px; margin: 0; box-sizing: border-box; text-align: left;">
             
             <!-- KOP SURAT OPTIMIZED FOR A4 SINGLE PAGE -->
             <div id="pdf-kop-header" style="width: 100%; margin-bottom: 6px; border-bottom: 3px double #000; padding-bottom: 4px;">
-                <img src="kop.jpeg" id="pdf-kop-img" alt="Kop Surat SMK YPT 2 Purbalingga" style="width: 100%; height: auto; max-width: 100%; display: block; object-fit: contain;" onerror="renderFallbackKop(this);">
+                <img src="kop.png" id="pdf-kop-img" alt="Kop Surat SMK YPT 2 Purbalingga" style="width: 100%; height: auto; max-width: 100%; display: block; object-fit: contain;" onerror="renderFallbackKop(this);">
             </div>
 
             <!-- JUDUL FORMULIR -->
@@ -1091,11 +989,10 @@ function doPost(e) {
                 </div>
             </div>
 
-
-            <!-- Tabel Detail Isi Hasil Inputan -->
-            <table style="width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 8px;" border="1" cellpadding="3">
+            <!-- Tabel Detail Hasil Inputan -->
+            <table style="width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 6px;" border="1" cellpadding="2.5">
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
                         A. DATA DIRI CALON SISWA
                     </th>
                 </tr>
@@ -1109,7 +1006,7 @@ function doPost(e) {
                 <tr><td>Alamat Lengkap</td><td id="pdf-5">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
                         B. DATA ORANG TUA / WALI
                     </th>
                 </tr>
@@ -1120,7 +1017,7 @@ function doPost(e) {
                 <tr><td>No. HP/WA Orang Tua</td><td id="pdf-30">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
                         C. AKADEMIK & JURUSAN PILIHAN
                     </th>
                 </tr>
@@ -1131,35 +1028,35 @@ function doPost(e) {
                 <tr><td>Sumber Informasi</td><td id="pdf-20">-</td></tr>
 
                 <tr style="background-color: #f2f2f2;">
-                    <th colspan="2" style="text-align: left; padding: 4px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
+                    <th colspan="2" style="text-align: left; padding: 3px 6px; font-size: 8.5pt; text-transform: uppercase; background-color: #e0e0e0;">
                         D. DATA FISIK, CEK FISIK & KESEHATAN
                     </th>
                 </tr>
                 <tr><td>Ukuran Fisik Siswa</td><td id="pdf-21-24">-</td></tr>
-                <tr><td>Pemeriksaan Cek Fisik</td><td id="pdf-cek-fisik" style="font-weight: bold; color: #1557b0;">-</td></tr>
+                <tr><td>Pemeriksaan Cek Fisik</td><td id="pdf-cek-fisik" style="font-weight: bold; color: #d32f2f;">-</td></tr>
                 <tr><td>Jarak & Waktu Tempuh</td><td id="pdf-25-26">-</td></tr>
                 <tr><td>Riwayat Penyakit</td><td id="pdf-27">-</td></tr>
                 <tr><td>Prestasi & Cita-Cita</td><td id="pdf-28-29">-</td></tr>
             </table>
 
             <!-- Catatan Verifikasi -->
-            <div style="font-size: 7.5pt; color: #333; border: 1px dashed #666; padding: 5px 8px; margin-bottom: 8px; line-height: 1.3;">
-                <b>Petunjuk Verifikasi Pendaftaran:</b> Silakan cetak Formulir Pendaftaran ini dan serahkan ke Panitia SPMB SMK YPT 2 Purbalingga beserta lampiran fotocopy KK, Akta Kelahiran, dan Ijazah/SKL SMP untuk proses daftar ulang.
+            <div style="font-size: 7.5pt; color: #333; border: 1px dashed #666; padding: 4px 6px; margin-bottom: 6px; line-height: 1.2;">
+                <b>Petunjuk Verifikasi Pendaftaran:</b> Silakan cetak/simpan bukti pendaftaran ini dan serahkan ke Panitia SPMB SMK YPT 2 Purbalingga beserta lampiran fotocopy KK, Akta Kelahiran, dan Ijazah/SKL SMP untuk proses daftar ulang.
             </div>
 
             <!-- Tanda Tangan Validation Area -->
-            <div style="display: flex; justify-content: space-between; font-size: 8.5pt; margin-top: 6px; page-break-inside: avoid; break-inside: avoid;">
+            <div style="display: flex; justify-content: space-between; font-size: 8.5pt; margin-top: 4px;">
                 <div style="text-align: center; width: 42%;">
                     <div>Mengetahui,</div>
                     <div style="font-weight: bold;">Panitia SPMB SMK YPT 2</div>
-                    <div style="height: 40px;"></div>
+                    <div style="height: 38px;"></div>
                     <div>( ......................................... )</div>
                 </div>
 
                 <div style="text-align: center; width: 45%;">
                     <div>Purbalingga, <span id="pdf-date-now"></span></div>
                     <div style="font-weight: bold;">Calon Peserta Didik Baru</div>
-                    <div style="height: 40px;"></div>
+                    <div style="height: 38px;"></div>
                     <div id="pdf-signature-name" style="font-weight: bold; text-decoration: underline;">( ......................................... )</div>
                 </div>
             </div>
@@ -1168,9 +1065,12 @@ function doPost(e) {
     </div>
 
     <script>
+        // Global Variables State
         let currentStudentData = null;
+        let pendingAction = null;
         let studentsDatabase = JSON.parse(localStorage.getItem('spmb_students_db')) || [];
         
+        // Counter register per jurusan
         let regCounters = JSON.parse(localStorage.getItem('spmb_counters')) || {
             TKR: 1,
             TSM: 1,
@@ -1190,6 +1090,7 @@ function doPost(e) {
                 updateWebhookBadgeStatus(false);
             }
 
+            // Auto refresh database every 30 seconds for live multi-user sync
             setInterval(() => {
                 const webhook = localStorage.getItem('spmb_webhook_url');
                 if (webhook) {
@@ -1198,24 +1099,22 @@ function doPost(e) {
             }, 30000);
         };
 
-function renderFallbackKop(imgElem) {
-            const container = document.getElementById('pdf-kop-header');
-            if (container) {
-                container.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 4px;">
-                        <div style="width: 55px; height: 55px; background: #0d47a1; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10pt; border-radius: 4px; text-align: center;">YPT 2</div>
-                        <div style="text-align: center; flex-grow: 1; padding: 0 10px;">
-                            <h2 style="margin:0; font-size: 12pt; font-weight: bold; color: #0d47a1;">YAYASAN PENDIDIKAN TEKNOLOGI (YPT) PURBALINGGA</h2>
-                            <h1 style="margin:1px 0; font-size: 14pt; font-weight: font-black; color: #000;">SMK YPT 2 PURBALINGGA</h1>
-                            <p style="margin:0; font-size: 7pt; color: #333;">Jl Mayor jendral Sungkono Kilometer 3 Telepon / Fax (0281) 892407</p>
-                            <p style="margin:0; font-size: 7pt; color: #333;">Website: www.smkypt2purbalingga.sch.id | Email: smk_ypt2_pbg@yahoo.co.id</p>
-                        </div>
-                    </div>
-                `;
-            }
+        // Fallback for Kop Surat image error
+        function renderFallbackKop(imgElement) {
+            const parent = imgElement.parentElement;
+            if (!parent) return;
+            parent.innerHTML = `
+                <div style="text-align: center; border-bottom: 3px double #000; padding-bottom: 6px; font-family: Arial, sans-serif;">
+                    <div style="font-size: 13pt; font-weight: bold; color: #0d47a1; text-transform: uppercase; letter-spacing: 0.5px;">YAYASAN PENDIDIKAN TEKNOLOGI PURBALINGGA</div>
+                    <div style="font-size: 18pt; font-weight: 900; color: #1565c0; text-transform: uppercase; margin: 2px 0;">SMK YPT 2 PURBALINGGA</div>
+                    <div style="font-size: 8pt; font-weight: bold; color: #333;">TERAKREDITASI "A" (AMAT BAIK)</div>
+                    <div style="font-size: 7.5pt; color: #444; margin-top: 2px;">Jl. Raya Kalikabong No. 1, Kalikabong, Kec. Kalimanah, Kabupaten Purbalingga, Jawa Tengah 53321</div>
+                    <div style="font-size: 7.5pt; color: #444;">Website: www.smkypt2pbg.sch.id | Email: smkypt2pbg@gmail.com</div>
+                </div>
+            `;
         }
 
-
+        // Tab Switching Logic
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
@@ -1237,6 +1136,7 @@ function renderFallbackKop(imgElem) {
             menu.classList.toggle('hidden');
         }
 
+        // Custom school selection handler
         function toggleSekolahLainnya() {
             const select = document.getElementById('field_16_asal_sekolah_select');
             const customInput = document.getElementById('field_16_sekolah_custom');
@@ -1249,6 +1149,7 @@ function renderFallbackKop(imgElem) {
             }
         }
 
+        // Card None Checkbox
         function toggleKartuNone(checkbox) {
             if (checkbox.checked) {
                 document.querySelectorAll('.kartu-gov').forEach(cb => {
@@ -1257,6 +1158,7 @@ function renderFallbackKop(imgElem) {
             }
         }
 
+        // Webhook URL save
         function saveWebhookUrl() {
             const url = document.getElementById('sheet_webhook_url').value.trim();
             if(!url) {
@@ -1296,9 +1198,11 @@ function renderFallbackKop(imgElem) {
             setTimeout(() => toast.remove(), 3500);
         }
 
+        // Form Submission Handler
         function handleFormSubmit(e) {
             e.preventDefault();
 
+            // Pilihan Jurusan Utama
             const jurusanRadio = document.querySelector('input[name="jurusan_utama"]:checked');
             if (!jurusanRadio) {
                 showToast('Silakan pilih Jurusan Utama!', 'warning');
@@ -1306,34 +1210,41 @@ function renderFallbackKop(imgElem) {
             }
             const jurusan = jurusanRadio.value;
 
-            // Updated Registration Code Format: [Jurusan]-27-[No Urut] (Contoh: TKR-27-001)
+            // GENERATE REGISTRATION CODE FORMAT: (Jurusan) - 27 - (urutan)
             const currentNum = regCounters[jurusan] || 1;
             const regCode = `${jurusan}-27-${String(currentNum).padStart(3, '0')}`;
 
+            // Increment counter untuk pendaftar jurusan berikutnya
             regCounters[jurusan] = currentNum + 1;
             localStorage.setItem('spmb_counters', JSON.stringify(regCounters));
 
+            // Extract Asal Sekolah
             const sekolahSelect = document.getElementById('field_16_asal_sekolah_select').value;
             const sekolahCustom = document.getElementById('field_16_sekolah_custom').value;
             const asalSekolah = sekolahSelect === 'Lainnya' ? sekolahCustom : sekolahSelect;
 
+            // Extract Kartu Bantuan
             const kartuGovList = [];
             document.querySelectorAll('.kartu-gov:checked').forEach(cb => kartuGovList.push(cb.value));
             const kartuGovStr = kartuGovList.length > 0 ? kartuGovList.join(', ') : 'Tidak Memiliki';
 
+            // Extract Sumber Info
             const infoList = [];
             document.querySelectorAll('.sumber-info:checked').forEach(cb => infoList.push(cb.value));
             const infoLainnya = document.getElementById('field_20_info_lainnya').value;
             if (infoLainnya) infoList.push(infoLainnya);
             const sumberInfoStr = infoList.length > 0 ? infoList.join(', ') : 'Lainnya';
 
-            // Extracted values for separated RT & RW and Cek Fisik
+            // Extract RT & RW terpisah
             const rtVal = document.getElementById('field_5_rt').value.trim();
             const rwVal = document.getElementById('field_5_rw').value.trim();
+
+            // Extract Cek Fisik Fields
             const cekButaWarna = document.getElementById('field_cek_buta_warna').value;
             const cekTato = document.getElementById('field_cek_tato').value;
             const cekTindik = document.getElementById('field_cek_tindik').value;
 
+            // Construct Full Student Object
             const student = {
                 noReg: regCode,
                 timestamp: new Date().toLocaleString('id-ID'),
@@ -1380,17 +1291,20 @@ function renderFallbackKop(imgElem) {
                 field_30_hp_ortu: document.getElementById('field_30_hp_ortu').value.trim()
             };
 
+            // Save locally
             studentsDatabase.unshift(student);
             localStorage.setItem('spmb_students_db', JSON.stringify(studentsDatabase));
 
             currentStudentData = student;
 
+            // Sync POST to Google Sheets
             postToGoogleSheets(student);
 
             renderTable();
             openSuccessModal(student);
         }
 
+        // Post Data to Google Sheets Webhook
         function postToGoogleSheets(studentData) {
             const webhookUrl = localStorage.getItem('spmb_webhook_url');
             if (!webhookUrl) return;
@@ -1407,6 +1321,7 @@ function renderFallbackKop(imgElem) {
             .catch(err => console.error('Sheet sync error:', err));
         }
 
+        // Fetch Realtime Data from Google Sheets
         function fetchFromGoogleSheets(showNotification = false) {
             const webhookUrl = localStorage.getItem('spmb_webhook_url');
             if (!webhookUrl) return;
@@ -1432,6 +1347,7 @@ function renderFallbackKop(imgElem) {
                 });
         }
 
+        // Modal Controls
         function openSuccessModal(student) {
             document.getElementById('modal-reg-code').innerText = student.noReg;
             document.getElementById('modal-student-name').innerText = student.field_1_nama;
@@ -1445,50 +1361,53 @@ function renderFallbackKop(imgElem) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Populate PDF Printable Element with form inputs
         function preparePDFData(data) {
-            document.getElementById('pdf-code').innerText = data.noReg;
-            document.getElementById('pdf-1').innerText = data.field_1_nama;
-            document.getElementById('pdf-2').innerText = data.field_2_jk;
-            document.getElementById('pdf-3-4').innerText = `${data.field_3_tempat_lahir}, ${data.field_4_tgl_lahir}`;
+            document.getElementById('pdf-code').innerText = data.noReg || '-';
+            document.getElementById('pdf-1').innerText = data.field_1_nama || '-';
+            document.getElementById('pdf-2').innerText = data.field_2_jk || '-';
+            document.getElementById('pdf-3-4').innerText = `${data.field_3_tempat_lahir || '-'}, ${data.field_4_tgl_lahir || '-'}`;
             
-            // Format RT & RW terpisah pada tampilan PDF
-            const rtDisplay = data.field_5_rt || '-';
-            const rwDisplay = data.field_5_rw || '-';
-            document.getElementById('pdf-5').innerText = `RT ${rtDisplay} / RW ${rwDisplay}, Desa ${data.field_5_desa || '-'}, Kec. ${data.field_5_kecamatan || '-'}, ${data.field_5_kota || 'Purbalingga'}, ${data.field_5_provinsi || 'Jawa Tengah'}`;
+            // Format Alamat dengan RT dan RW
+            const rtVal = data.field_5_rt || (data.field_5_rtrw ? data.field_5_rtrw.split('/')[0] : '');
+            const rwVal = data.field_5_rw || (data.field_5_rtrw ? data.field_5_rtrw.split('/')[1] : '');
+            const rtRwText = (rtVal || rwVal) ? `RT ${rtVal || '-'} / RW ${rwVal || '-'}` : (data.field_5_rtrw || '-');
+
+            document.getElementById('pdf-5').innerText = `${rtRwText}, Desa ${data.field_5_desa || '-'}, Kec. ${data.field_5_kecamatan || '-'}, ${data.field_5_kota || '-'}, ${data.field_5_provinsi || '-'}`;
+            document.getElementById('pdf-6').innerText = data.field_6_hp_siswa || '-';
+            document.getElementById('pdf-7').innerText = data.field_7_no_kk || '-';
+            document.getElementById('pdf-8').innerText = data.field_8_nik || '-';
+            document.getElementById('pdf-15').innerText = data.field_15_agama || '-';
+
+            document.getElementById('pdf-9-10').innerText = `${data.field_9_nama_ayah || '-'} (NIK: ${data.field_10_nik_ayah || '-'})`;
+            document.getElementById('pdf-11').innerText = `${data.field_11_pekerjaan_ayah || '-'} (Penghasilan: ${data.field_11b_penghasilan_ayah || '-'})`;
+            document.getElementById('pdf-12-13').innerText = `${data.field_12_nama_ibu || '-'} (NIK: ${data.field_13_nik_ibu || '-'})`;
+            document.getElementById('pdf-14').innerText = `${data.field_14_pekerjaan_ibu || '-'} (Penghasilan: ${data.field_14b_penghasilan_ibu || '-'})`;
+            document.getElementById('pdf-30').innerText = data.field_30_hp_ortu || '-';
+
+            document.getElementById('pdf-16').innerText = data.field_16_asal_sekolah || '-';
+            document.getElementById('pdf-17').innerText = data.field_17_tahun_lulus || '-';
+            document.getElementById('pdf-18').innerText = data.field_18_kartu_pemerintah || '-';
+            document.getElementById('pdf-19').innerText = `${data.field_19_jurusan || '-'} (SMK YPT 2 Purbalingga)`;
+            document.getElementById('pdf-20').innerText = data.field_20_sumber_info || '-';
+
+            document.getElementById('pdf-21-24').innerText = `Tinggi: ${data.field_21_tinggi || '-'} cm | Berat: ${data.field_22_berat || '-'} kg | Lingkar Kepala: ${data.field_23_lingkar_kepala || '-'} cm | Sepatu: ${data.field_24_ukuran_sepatu || '-'}`;
             
-            document.getElementById('pdf-6').innerText = data.field_6_hp_siswa;
-            document.getElementById('pdf-7').innerText = data.field_7_no_kk;
-            document.getElementById('pdf-8').innerText = data.field_8_nik;
-            document.getElementById('pdf-15').innerText = data.field_15_agama;
-
-            document.getElementById('pdf-9-10').innerText = `${data.field_9_nama_ayah} (NIK: ${data.field_10_nik_ayah})`;
-            document.getElementById('pdf-11').innerText = `${data.field_11_pekerjaan_ayah} (Penghasilan: ${data.field_11b_penghasilan_ayah || '-'})`;
-            document.getElementById('pdf-12-13').innerText = `${data.field_12_nama_ibu} (NIK: ${data.field_13_nik_ibu})`;
-            document.getElementById('pdf-14').innerText = `${data.field_14_pekerjaan_ibu} (Penghasilan: ${data.field_14b_penghasilan_ibu || '-'})`;
-            document.getElementById('pdf-30').innerText = data.field_30_hp_ortu;
-
-            document.getElementById('pdf-16').innerText = data.field_16_asal_sekolah;
-            document.getElementById('pdf-17').innerText = data.field_17_tahun_lulus;
-            document.getElementById('pdf-18').innerText = data.field_18_kartu_pemerintah;
-            document.getElementById('pdf-19').innerText = `${data.field_19_jurusan} (SMK YPT 2 Purbalingga)`;
-            document.getElementById('pdf-20').innerText = data.field_20_sumber_info;
-
-            document.getElementById('pdf-21-24').innerText = `Tinggi: ${data.field_21_tinggi} cm | Berat: ${data.field_22_berat} kg | Lingkar Kepala: ${data.field_23_lingkar_kepala} cm | Sepatu: ${data.field_24_ukuran_sepatu}`;
-            
-            // Format status Cek Fisik pada PDF
+            // Render Cek Fisik in PDF
             const butaWarnaVal = data.field_cek_buta_warna || 'Belum di cek';
             const tatoVal = data.field_cek_tato || 'Belum di cek';
             const tindikVal = data.field_cek_tindik || 'Belum di cek';
             document.getElementById('pdf-cek-fisik').innerText = `Buta Warna: ${butaWarnaVal} | Tato: ${tatoVal} | Tindik: ${tindikVal}`;
 
-            document.getElementById('pdf-25-26').innerText = `Jarak: ${data.field_25_jarak} KM | Waktu: ${data.field_26_waktu} Menit`;
-            document.getElementById('pdf-27').innerText = data.field_27_penyakit;
-            document.getElementById('pdf-28-29').innerText = `Prestasi: ${data.field_28_prestasi} | Cita-cita: ${data.field_29_cita_cita}`;
+            document.getElementById('pdf-25-26').innerText = `Jarak: ${data.field_25_jarak || '-'} KM | Waktu: ${data.field_26_waktu || '-'} Menit`;
+            document.getElementById('pdf-27').innerText = data.field_27_penyakit || 'Tidak ada';
+            document.getElementById('pdf-28-29').innerText = `Prestasi: ${data.field_28_prestasi || 'Tidak ada'} | Cita-cita: ${data.field_29_cita_cita || '-'}`;
 
             document.getElementById('pdf-date-now').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('pdf-signature-name').innerText = `( ${data.field_1_nama} )`;
+            document.getElementById('pdf-signature-name').innerText = `( ${data.field_1_nama || '................................'} )`;
         }
 
+        // Direct Browser Print Fallback Button
         function printDirectly(studentData = null) {
             const data = studentData || currentStudentData;
             if (!data) return;
@@ -1496,6 +1415,7 @@ function renderFallbackKop(imgElem) {
             window.print();
         }
 
+        // EXPORT PDF DIRECTLY TO DOWNLOAD FILE WITHOUT OPENING PRINTER DIALOG
         function downloadGeneratedPDF(studentData = null) {
             const data = studentData || currentStudentData;
             if (!data) {
@@ -1503,12 +1423,10 @@ function renderFallbackKop(imgElem) {
                 return;
             }
 
+            // 1. Fill data into PDF elements
             preparePDFData(data);
 
-            const container = document.getElementById('pdf-render-container');
-            const element = document.getElementById('pdf-template');
             const btn = document.getElementById('btn-download-pdf-modal');
-            
             let originalBtnHtml = '';
             if (btn) {
                 originalBtnHtml = btn.innerHTML;
@@ -1516,18 +1434,27 @@ function renderFallbackKop(imgElem) {
                 btn.disabled = true;
             }
 
-            const savedScrollY = window.scrollY;
-            window.scrollTo(0, 0);
+            // 2. Clone PDF template for clean offscreen rendering
+            const element = document.getElementById('pdf-template');
+            const clone = element.cloneNode(true);
+            
+            // Ensure clone is fully visible in canvas renderer
+            clone.style.display = 'block';
+            clone.style.visibility = 'visible';
+            clone.style.opacity = '1';
+            
+            const tempContainer = document.createElement('div');
+            tempContainer.style.position = 'fixed';
+            tempContainer.style.left = '-9999px'; 
+            tempContainer.style.top = '0';
+            tempContainer.style.width = '780px';
+            tempContainer.style.backgroundColor = '#ffffff';
+            tempContainer.style.zIndex = '-9999';
+            
+            tempContainer.appendChild(clone);
+            document.body.appendChild(tempContainer);
 
-            container.style.position = 'absolute';
-            container.style.left = '0px';
-            container.style.top = '0px';
-            container.style.opacity = '1';
-            container.style.visibility = 'visible';
-            container.style.zIndex = '999999';
-            container.style.background = '#ffffff';
-
-            const safeFileName = `Formulir_Pendaftaran_${data.noReg}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+            const safeFileName = `SPMB_SMKYPT2_${data.noReg || 'REG'}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
             const opt = {
                 margin:       [8, 8, 8, 8],
@@ -1538,48 +1465,82 @@ function renderFallbackKop(imgElem) {
                     useCORS: true, 
                     allowTaint: true,
                     logging: false, 
-                    scrollX: 0, 
-                    scrollY: 0,
-                    x: 0,
-                    y: 0,
                     windowWidth: 800
                 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            setTimeout(() => {
-                if (typeof html2pdf !== 'undefined') {
-                    html2pdf().set(opt).from(element).save().then(() => {
-                        resetPdfContainer();
-                    }).catch(err => {
-                        console.warn('html2pdf capture error:', err);
-                        resetPdfContainer();
-                        window.print();
-                    });
-                } else {
-                    resetPdfContainer();
-                    window.print();
-                }
-            }, 450);
-
-            function resetPdfContainer() {
-                container.style.position = 'absolute';
-                container.style.left = '-9999px';
-                container.style.top = '0px';
-                container.style.opacity = '0';
-                container.style.visibility = 'hidden';
-                container.style.zIndex = '-1';
-                
-                window.scrollTo(0, savedScrollY);
-
-                if (btn) {
-                    btn.innerHTML = originalBtnHtml;
-                    btn.disabled = false;
-                }
+            // 3. Generate and trigger direct file download
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(clone).save().then(() => {
+                    cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                    showToast('PDF berhasil diunduh ke folder Downloads!');
+                }).catch(err => {
+                    console.error('html2pdf export error:', err);
+                    cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                    // Beralih ke fallback jsPDF tanpa membuka dialog printer
+                    fallbackPDFDownload(data, safeFileName);
+                });
+            } else {
+                cleanUpPDF(tempContainer, btn, originalBtnHtml);
+                fallbackPDFDownload(data, safeFileName);
+            }
+        }
+        
+        function cleanUpPDF(container, btnElement, originalHtml) {
+            if (container && document.body.contains(container)) {
+                document.body.removeChild(container);
+            }
+            if (btnElement) {
+                btnElement.innerHTML = originalHtml;
+                btnElement.disabled = false;
             }
         }
 
+        // Fallback Direct Text PDF Exporter using jsPDF if Canvas Engine is blocked
+        function fallbackPDFDownload(data, filename) {
+            try {
+                const { jsPDF } = window.jspdf || window;
+                if (!jsPDF) {
+                    showToast('Gagal memproses file PDF.', 'warning');
+                    return;
+                }
+                const doc = new jsPDF();
+                doc.setFontSize(14);
+                doc.text("SMK YPT 2 PURBALINGGA", 20, 20);
+                doc.setFontSize(11);
+                doc.text("BUKTI PENDAFTARAN PESERTA DIDIK BARU (SPMB)", 20, 28);
+                doc.text("Tahun Ajaran 2027/2028", 20, 34);
+                doc.line(20, 38, 190, 38);
+
+                let y = 48;
+                doc.setFontSize(10);
+                doc.text(`No. Registrasi : ${data.noReg || '-'}`, 20, y); y += 7;
+                doc.text(`Nama Lengkap   : ${data.field_1_nama || '-'}`, 20, y); y += 7;
+                doc.text(`Jenis Kelamin  : ${data.field_2_jk || '-'}`, 20, y); y += 7;
+                doc.text(`TTL            : ${data.field_3_tempat_lahir || '-'}, ${data.field_4_tgl_lahir || '-'}`, 20, y); y += 7;
+                doc.text(`NIK            : ${data.field_8_nik || '-'}`, 20, y); y += 7;
+                doc.text(`No. KK         : ${data.field_7_no_kk || '-'}`, 20, y); y += 7;
+                doc.text(`Jurusan Pilihan: ${data.field_19_jurusan || '-'}`, 20, y); y += 7;
+                doc.text(`Asal Sekolah   : ${data.field_16_asal_sekolah || '-'}`, 20, y); y += 7;
+                doc.text(`No. HP Siswa   : ${data.field_6_hp_siswa || '-'}`, 20, y); y += 7;
+                doc.text(`No. HP Ortu    : ${data.field_30_hp_ortu || '-'}`, 20, y); y += 7;
+                doc.text(`Buta Warna     : ${data.field_cek_buta_warna || 'Belum di cek'}`, 20, y); y += 7;
+                doc.text(`Tato           : ${data.field_cek_tato || 'Belum di cek'}`, 20, y); y += 7;
+                doc.text(`Tindik         : ${data.field_cek_tindik || 'Belum di cek'}`, 20, y); y += 12;
+                
+                doc.text("Purbalingga, " + new Date().toLocaleDateString('id-ID'), 120, y); y += 20;
+                doc.text(`( ${data.field_1_nama || 'Pendaftar'} )`, 120, y);
+
+                doc.save(filename);
+                showToast('File PDF berhasil diunduh!');
+            } catch(e) {
+                console.error('Fallback PDF error:', e);
+                showToast('Gagal mengunduh file PDF.', 'warning');
+            }
+        }
+
+        // Render Student Database Table
         function renderTable() {
             const tbody = document.getElementById('student-table-body');
             const emptyState = document.getElementById('empty-state');
@@ -1593,104 +1554,125 @@ function renderFallbackKop(imgElem) {
                 const reg = item.noReg ? item.noReg.toLowerCase() : '';
                 const nik = item.field_8_nik ? item.field_8_nik : '';
                 const sekolah = item.field_16_asal_sekolah ? item.field_16_asal_sekolah.toLowerCase() : '';
-
+                
                 const matchesSearch = nama.includes(search) || reg.includes(search) || nik.includes(search) || sekolah.includes(search);
-                const matchesJurusan = filterJurusan === '' || item.field_19_jurusan === filterJurusan;
-
+                const matchesJurusan = filterJurusan ? item.field_19_jurusan === filterJurusan : true;
                 return matchesSearch && matchesJurusan;
             });
 
             if (filtered.length === 0) {
-                if (emptyState) emptyState.classList.remove('hidden');
-                return;
+                emptyState.classList.remove('hidden');
             } else {
-                if (emptyState) emptyState.classList.add('hidden');
+                emptyState.classList.add('hidden');
+                filtered.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50/50 hover:bg-gray-100/50';
+                    
+                    const butaWarnaBadge = item.field_cek_buta_warna === 'Belum di cek' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">Belum di cek</span>' :
+                                          item.field_cek_buta_warna === 'Normal' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Normal</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-800">' + (item.field_cek_buta_warna || '-') + '</span>';
+                                          
+                    const tatoBadge = item.field_cek_tato === 'Belum di cek' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">Belum di cek</span>' :
+                                      item.field_cek_tato === 'Tidak' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Tidak</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Ada/Bekas</span>';
+                                      
+                    const tindikBadge = item.field_cek_tindik === 'Belum di cek' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">Belum di cek</span>' :
+                                        item.field_cek_tindik === 'Tidak' ? '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Tidak</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Ada/Bekas</span>';
+
+                    const itemJson = JSON.stringify(item).replace(/'/g, "&apos;");
+
+                    tr.innerHTML = `
+                        <td class="px-3 py-2.5 font-bold font-mono text-google-blue border-r">${item.noReg || '-'}</td>
+                        <td class="px-3 py-2.5 font-semibold text-gray-800 border-r">${item.field_1_nama || '-'}</td>
+                        <td class="px-3 py-2.5 border-r">${item.field_2_jk === 'Laki-laki' ? 'L' : 'P'}</td>
+                        <td class="px-3 py-2.5 font-bold text-gray-700 border-r">${item.field_19_jurusan || '-'}</td>
+                        <td class="px-3 py-2.5 border-r">${butaWarnaBadge}</td>
+                        <td class="px-3 py-2.5 border-r">${tatoBadge}</td>
+                        <td class="px-3 py-2.5 border-r">${tindikBadge}</td>
+                        <td class="px-3 py-2.5 border-r max-w-xs truncate" title="${item.field_16_asal_sekolah || ''}">${item.field_16_asal_sekolah || '-'}</td>
+                        <td class="px-3 py-2.5 border-r font-mono">${item.field_6_hp_siswa || '-'}</td>
+                        <td class="px-3 py-2.5 border-r font-mono text-gray-500">${item.field_8_nik || '-'}</td>
+                        <td class="px-3 py-2.5 text-center">
+                            <div class="flex items-center justify-center space-x-1">
+                                <button onclick='downloadGeneratedPDF(${itemJson})' title="Export PDF File" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                                <button onclick="promptDeleteStudent('${item.noReg}')" title="Hapus Data" class="p-1.5 text-red-600 hover:bg-red-50 rounded">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             }
-
-            filtered.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.className = index % 2 === 0 ? 'bg-white hover:bg-blue-50/50' : 'bg-gray-50/50 hover:bg-blue-50/50';
-
-                tr.innerHTML = `
-                    <td class="px-3 py-2.5 font-bold text-google-blue font-mono border-r">${item.noReg || '-'}</td>
-                    <td class="px-3 py-2.5 font-semibold text-gray-800 border-r">${item.field_1_nama || '-'}</td>
-                    <td class="px-3 py-2.5 border-r">${item.field_2_jk === 'Laki-laki' ? 'L' : 'P'}</td>
-                    <td class="px-3 py-2.5 border-r font-bold">${item.field_19_jurusan || '-'}</td>
-                    <td class="px-3 py-2.5 border-r">${item.field_cek_buta_warna || 'Belum'}</td>
-                    <td class="px-3 py-2.5 border-r">${item.field_cek_tato || 'Belum'}</td>
-                    <td class="px-3 py-2.5 border-r">${item.field_cek_tindik || 'Belum'}</td>
-                    <td class="px-3 py-2.5 border-r">${item.field_16_asal_sekolah || '-'}</td>
-                    <td class="px-3 py-2.5 border-r">${item.field_6_hp_siswa || '-'}</td>
-                    <td class="px-3 py-2.5 border-r font-mono">${item.field_8_nik || '-'}</td>
-                    <td class="px-3 py-2.5 text-center">
-                        <div class="flex items-center justify-center space-x-1">
-                            <button onclick='downloadGeneratedPDF(${JSON.stringify(item).replace(/'/g, "&apos;")})' title="Cetak/PDF" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded">
-                                <i class="fas fa-print text-sm"></i>
-                            </button>
-                            <button onclick='confirmDeleteStudent("${item.noReg}")' title="Hapus" class="p-1.5 text-red-600 hover:bg-red-100 rounded">
-                                <i class="fas fa-trash-alt text-sm"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
 
-        let studentToDelete = null;
+        // Confirm Delete Prompt using Custom Modal
+        function promptDeleteStudent(noReg) {
+            document.getElementById('confirm-title').innerText = "Hapus Data Pendaftar";
+            document.getElementById('confirm-message').innerText = `Apakah Anda yakin ingin menghapus data dengan No. Reg ${noReg}?`;
+            
+            pendingAction = function() {
+                deleteStudent(noReg);
+            };
 
-        function confirmDeleteStudent(noReg) {
-            studentToDelete = noReg;
-            document.getElementById('confirm-title').innerText = 'Konfirmasi Hapus Data';
-            document.getElementById('confirm-message').innerText = `Apakah Anda yakin ingin menghapus data dengan Nomor Registrasi ${noReg}?`;
             document.getElementById('confirm-modal').classList.remove('hidden');
-
-            document.getElementById('confirm-btn-ok').onclick = function() {
-                deleteStudent(studentToDelete);
-                document.getElementById('confirm-modal').classList.add('hidden');
-            };
-            document.getElementById('confirm-btn-cancel').onclick = function() {
-                document.getElementById('confirm-modal').classList.add('hidden');
-            };
         }
 
         function deleteStudent(noReg) {
             studentsDatabase = studentsDatabase.filter(s => s.noReg !== noReg);
             localStorage.setItem('spmb_students_db', JSON.stringify(studentsDatabase));
             renderTable();
-            showToast(`Data ${noReg} telah berhasil dihapus.`);
+            showToast(`Data ${noReg} berhasil dihapus dari database lokal.`);
         }
 
         function promptClearAllData() {
-            document.getElementById('confirm-title').innerText = 'Konfirmasi Reset Lokal';
-            document.getElementById('confirm-message').innerText = 'Apakah Anda yakin ingin menghapus SELURUH data lokal di browser ini? Data di Google Sheets tidak akan terhapus.';
-            document.getElementById('confirm-modal').classList.remove('hidden');
+            document.getElementById('confirm-title').innerText = "Reset Database Lokal";
+            document.getElementById('confirm-message').innerText = "Apakah Anda yakin ingin menghapus SELURUH data pendaftar dari penyimpanan browser lokal ini?";
+            
+            pendingAction = function() {
+                clearAllData();
+            };
 
-            document.getElementById('confirm-btn-ok').onclick = function() {
-                localStorage.removeItem('spmb_students_db');
-                studentsDatabase = [];
-                renderTable();
-                document.getElementById('confirm-modal').classList.add('hidden');
-                showToast('Seluruh data lokal berhasil dibersihkan.');
-            };
-            document.getElementById('confirm-btn-cancel').onclick = function() {
-                document.getElementById('confirm-modal').classList.add('hidden');
-            };
+            document.getElementById('confirm-modal').classList.remove('hidden');
         }
 
+        function clearAllData() {
+            studentsDatabase = [];
+            localStorage.removeItem('spmb_students_db');
+            renderTable();
+            showToast("Database lokal berhasil dibersihkan!");
+        }
+
+        // Modal Action Listener
+        document.getElementById('confirm-btn-ok').onclick = function() {
+            if (typeof pendingAction === 'function') {
+                pendingAction();
+            }
+            document.getElementById('confirm-modal').classList.add('hidden');
+            pendingAction = null;
+        };
+
+        document.getElementById('confirm-btn-cancel').onclick = function() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            pendingAction = null;
+        };
+
+        // Export Database to CSV File
         function exportToCSV() {
             if (studentsDatabase.length === 0) {
-                showToast('Tidak ada data untuk diexport!', 'warning');
+                showToast("Tidak ada data pendaftar untuk di-export!", "warning");
                 return;
             }
 
             const headers = Object.keys(studentsDatabase[0]);
-            let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // UTF-8 BOM for Excel
+            csvContent += headers.join(",") + "\n";
 
             studentsDatabase.forEach(row => {
                 const values = headers.map(header => {
-                    const val = row[header] !== undefined ? String(row[header]).replace(/"/g, '""') : '';
-                    return `"${val}"`;
+                    const val = row[header] !== undefined ? row[header] : "";
+                    const escaped = ('' + val).replace(/"/g, '""');
+                    return `"${escaped}"`;
                 });
                 csvContent += values.join(",") + "\n";
             });
@@ -1698,21 +1680,21 @@ function renderFallbackKop(imgElem) {
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Data_SPMB_SMK_YPT_2_Purbalingga_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `SPMB_SMK_YPT_2_Purbalingga_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            showToast("Export CSV berhasil!");
         }
 
+        // Copy Apps Script snippet
         function copyAppsScriptCode() {
             const codeText = document.getElementById('apps-script-code-block').innerText;
-            const tempArea = document.createElement('textarea');
-            tempArea.value = codeText;
-            document.body.appendChild(tempArea);
-            tempArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempArea);
-            showToast('Kode Google Apps Script berhasil disalin!');
+            navigator.clipboard.writeText(codeText).then(() => {
+                showToast("Kode Apps Script berhasil disalin ke clipboard!");
+            }).catch(err => {
+                showToast("Gagal menyalin kode.", "warning");
+            });
         }
     </script>
 </body>
