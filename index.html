@@ -975,123 +975,87 @@ function doPost(e) {
     <!-- OFF-SCREEN RENDER CONTAINER FOR PDF EXPORT -->
     <div id="pdf-render-container">
         
-        <!-- TEMPLATE 1: KARTU PENDAFTARAN PDF (PERSIS SESUAI KARTU PENDAFTARAN.PDF) -->
-        <div id="kartu-pdf-template" style="padding: 20px 24px; background: #ffffff; color: #000000; font-family: Arial, sans-serif; width: 750px; margin: 0 auto; box-sizing: border-box; font-size: 10pt; line-height: 1.4;">
+        <!-- TEMPLATE KARTU PENDAFTARAN — LAYOUT A4 LANDSCAPE -->
+        <div id="kartu-pdf-template">
+          <style>
+            #kartu-pdf-template{width:1123px;height:760px;padding:24px;background:#fff;color:#000;font:16px/1.35 Arial,sans-serif;box-sizing:border-box;}
+            #kartu-pdf-template *{box-sizing:border-box;}
+            #kartu-pdf-template .kartu-sheet{width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;border:3px solid #000;}
+            #kartu-pdf-template .kartu-panel{position:relative;min-width:0;padding:12px 6px;overflow:hidden;}
+            #kartu-pdf-template .kartu-panel:first-child{border-right:2px solid #777;}
+            #kartu-pdf-template .kartu-header{height:91px;background:#8db3e2;border-bottom:3px solid #000;text-align:center;padding:6px 3px;display:flex;flex-direction:column;justify-content:center;}
+            #kartu-pdf-template .kartu-header .instansi{font-size:16px;white-space:nowrap;font-weight:400;}
+            #kartu-pdf-template .kartu-header .sekolah{font-size:16px;margin-top:5px;}
+            #kartu-pdf-template .kartu-header .tahun{font-size:16px;margin-top:5px;}
+            #kartu-pdf-template .kartu-title{text-align:center;font-size:20px;font-weight:bold;margin:5px 0 36px;white-space:nowrap;}
+            #kartu-pdf-template .kartu-panel-kanan .kartu-title{margin-top:5px;margin-bottom:36px}
             
-            <!-- OUTER BORDER BOX FOR KARTU PENDAFTARAN -->
-            <div style="border: 2px solid #000; padding: 16px 20px; border-radius: 4px; background: #fff;">
-                
-                <!-- HEADER WITH LOGO & TOP-RIGHT NUMBER BOX -->
-                <div style="display: flex; justify-content: space-between; items-center; border-b: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
-                    <!-- LOGO BANNER ASSET -->
-                    <div style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <img src="logoypt2.png" alt="Logo SMK YPT 2 Purbalingga" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.onerror=null; this.src='https://placehold.co/120x120/0d47a1/ffffff?text=YPT+2';">
-                    </div>
-
-                    <!-- TITLE HEADER TEXT -->
-                    <div style="text-align: center; flex-grow: 1; padding: 0 10px;">
-                        <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">PANITIA PENERIMAAN PESERTA DIDIK BARU</div>
-                        <div style="font-size: 12pt; font-weight: bold; text-transform: uppercase;">SMK YPT 2 PURBALINGGA</div>
-                        <div style="font-size: 10pt; font-weight: bold; margin-top: 2px;">TAHUN PELAJARAN 2027 / 2028</div>
-                        <div style="font-size: 13pt; font-weight: bold; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; color: #0d47a1;">KARTU PENDAFTARAN</div>
-                    </div>
-
-                    <!-- POJOK KANAN ATAS: NOMOR & KODE FORMULIR TEMPLATE -->
-                    <div style="border: 1.5px solid #000; padding: 4px 8px; font-size: 8pt; font-family: 'Courier New', Courier, monospace; text-align: left; width: 130px; shrink-0;">
-                        <div>F.721/WKS2.1</div>
-                        <div>0/11-11-2011</div>
-                        <div id="kartu-top-reg" style="font-weight: bold; font-size: 9.5pt; margin-top: 3px; color: #0d47a1;">TKR-27-001</div>
-                    </div>
+            #kartu-pdf-template .kartu-reg-number{position:absolute;top:76px;right:10px;z-index:3;background:#8db3e2;color:#d00;font:bold 14px 'Courier New',monospace;white-space:nowrap;}
+            #kartu-pdf-template .kartu-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:16px;}
+            #kartu-pdf-template .kartu-table td{padding:6px 1px;vertical-align:top;}
+            #kartu-pdf-template .kartu-table .nomor{width:28px;}
+            #kartu-pdf-template .kartu-table .label{width:143px;white-space:nowrap;}
+            #kartu-pdf-template .kartu-table .titik-dua{width:15px;text-align:center;}
+            #kartu-pdf-template .kartu-table .isi{overflow-wrap:anywhere;}
+            #kartu-pdf-template .kartu-signature{width:100%;text-align:center;margin-top:28px;padding:0 8px;}
+            #kartu-pdf-template .kartu-signature .tanggal{white-space:nowrap;}
+            #kartu-pdf-template .kartu-signature .petugas{margin-top:6px;}
+            #kartu-pdf-template .kartu-signature .garis-tanda-tangan{margin-top:82px;white-space:nowrap;letter-spacing:1px;}
+            #kartu-pdf-template .kartu-catatan{font-size:15px;margin:20px 0 0 5px;}
+            #kartu-pdf-template .kartu-right-content{display:grid;grid-template-columns:130px minmax(0,1fr);gap:14px;align-items:start;margin-top:28px;padding:0 12px 0 35px;}
+            #kartu-pdf-template .kartu-photo{width:112px;height:150px;border:1px solid #000;display:flex;align-items:center;justify-content:center;text-align:center;font-size:16px;background:#fff;}
+            #kartu-pdf-template .kartu-signature-right{min-width:0;text-align:center;margin-top:28px;font-size:16px;}
+            #kartu-pdf-template .kartu-signature-right .tanggal{white-space:nowrap;}
+            #kartu-pdf-template .kartu-signature-right .petugas{margin-top:6px;}
+            #kartu-pdf-template .kartu-signature-right .garis-tanda-tangan{margin-top:82px;white-space:nowrap;font-size:14px;}
+            @media print{@page{size:A4 landscape;margin:0;}html,body{margin:0!important;padding:0!important;}#kartu-pdf-template{width:1123px!important;height:760px!important;margin:0!important;padding:24px!important;print-color-adjust:exact;-webkit-print-color-adjust:exact;}}
+          </style>
+          <div class="kartu-sheet">
+            <section class="kartu-panel">
+              <div class="kartu-header">
+                <div class="panitia">PANITIA PENERIMAAN PESERTA DIDIK BARU</div>
+                <div class="smk">SMK YPT 2 PURBALINGGA</div>
+                <div class="th">TAHUN PELAJARAN 2027 / 2028</div>
+              </div>
+              <div class="kartu-title">KARTU PENDAFTARAN</div>
+              <table class="kartu-table">
+                <tr><td class="nomor">1.</td><td class="label">Nama</td><td class="titik-dua">:</td><td class="isi" id="kartu-nama-1">-</td></tr>
+                <tr><td class="nomor">2.</td><td class="label">No. Pendaftaran</td><td class="titik-dua">:</td><td class="isi" id="kartu-no-reg-1" style="color:red;font-weight:bold;font-family:'Courier New',monospace;">TKR - 27 - 001</td></tr>
+                <tr><td class="nomor">3.</td><td class="label">SKL / Rapot</td><td class="titik-dua">:</td><td class="isi">Asli / Foto Copy *)</td></tr>
+                <tr><td class="nomor">4.</td><td class="label">Program Keahlian</td><td class="titik-dua">:</td><td class="isi" id="kartu-program-1">-</td></tr>
+              </table>
+              <div class="kartu-signature">
+                <div class="tanggal">Purbalingga, ........................... 2026</div>
+                <div class="petugas">Petugas Pendaftaran</div>
+                <div class="garis-tanda-tangan">....................................................</div>
+              </div>
+              <div class="kartu-catatan">*) Coret salah satu</div>
+            </section>
+            <section class="kartu-panel kartu-panel-kanan">
+              
+              <div class="kartu-header">
+                <div class="instansi">PANITIA PENERIMAAN PESERTA DIDIK BARU</div>
+                <div class="sekolah">SMK YPT 2 PURBALINGGA</div>
+                <div class="tahun">TAHUN PELAJARAN 2027 / 2028</div>
+              </div>
+              <div class="kartu-reg-number" id="kartu-top-reg">TKR - 27 - 001</div>
+              <div class="kartu-title">KARTU PENDAFTARAN</div>
+              <table class="kartu-table">
+                <tr><td class="nomor">1.</td><td class="label">Nama</td><td class="titik-dua">:</td><td class="isi" id="kartu-nama-2">-</td></tr>
+                <tr><td class="nomor">2.</td><td class="label">SKL / Rapot *)</td><td class="titik-dua">:</td><td class="isi">Asli / Foto Copy *)</td></tr>
+                <tr><td class="nomor">3.</td><td class="label">Program Keahlian</td><td class="titik-dua">:</td><td class="isi" id="kartu-program-2">-</td></tr>
+              </table>
+              <div class="kartu-right-content">
+                <div class="kartu-photo">Pas Foto<br>3 x 4</div>
+                <div class="kartu-signature-right">
+                  <div class="tanggal">Purbalingga, ........................... 2026</div>
+                  <div class="petugas">Petugas Pendaftaran</div>
+                  <div class="garis-tanda-tangan">...........................................</div>
                 </div>
-
-                <!-- BAGIAN ATAS (UTAMA) KARTU PENDAFTARAN -->
-                <div style="margin-bottom: 15px;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 10pt;" cellpadding="4">
-                        <tr>
-                            <td style="width: 28%; font-weight: bold;">1. Nama</td>
-                            <td style="width: 3%;">:</td>
-                            <td id="kartu-nama-1" style="font-weight: bold; text-transform: uppercase;">-</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold;">2. No. Pendaftaran</td>
-                            <td>:</td>
-                            <td id="kartu-no-reg-1" style="font-weight: bold; font-family: monospace; font-size: 11pt; color: #0d47a1;">-</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold;">3. SKL / Rapot</td>
-                            <td>:</td>
-                            <td>Asli / Foto Copy *)</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold;">4. Program Keahlian</td>
-                            <td>:</td>
-                            <td id="kartu-program-1" style="font-weight: bold;">-</td>
-                        </tr>
-                    </table>
-
-                    <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-                        <div style="text-align: center; width: 220px;">
-                            <div>Purbalingga, <span class="kartu-date-stamp">14 Oktober 2026</span></div>
-                            <div style="font-weight: bold; margin-top: 2px;">Petugas Pendaftaran</div>
-                            <div style="height: 45px;"></div>
-                            <div>( ......................................... )</div>
-                        </div>
-                    </div>
-
-                    <div style="font-size: 8pt; font-style: italic; margin-top: 5px;">
-                        *) Coret salah satu
-                    </div>
-                </div>
-
-                <!-- GARIS POTONGAN (CUT LINE) -->
-                <div style="border-top: 2px dashed #000; margin: 20px 0; position: relative; text-align: center;">
-                    <span style="position: relative; top: -10px; background: #fff; padding: 0 10px; font-size: 8pt; font-weight: bold; text-transform: uppercase; color: #555;">
-                        <i class="fas fa-scissors"></i> Potongan Untuk Bukti Pendaftar
-                    </span>
-                </div>
-
-                <!-- BAGIAN BAWAH (POTONGAN BUKTI BUKTI PENDAFTAR) -->
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <!-- LIST DETAIL POTONGAN -->
-                        <div style="flex-grow: 1; margin-right: 15px;">
-                            <table style="width: 100%; border-collapse: collapse; font-size: 10pt;" cellpadding="4">
-                                <tr>
-                                    <td style="width: 32%; font-weight: bold;">1. Nama</td>
-                                    <td style="width: 3%;">:</td>
-                                    <td id="kartu-nama-2" style="font-weight: bold; text-transform: uppercase;">-</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight: bold;">2. SKL / Rapot *)</td>
-                                    <td>:</td>
-                                    <td>Asli / Foto Copy *)</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight: bold;">3. Program Keahlian</td>
-                                    <td>:</td>
-                                    <td id="kartu-program-2" style="font-weight: bold;">-</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <!-- BOX PAS FOTO 3 X 4 -->
-                        <div style="width: 90px; height: 110px; border: 1.5px solid #000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 8pt; font-weight: bold; background: #fafafa; flex-shrink: 0; margin-top: 5px;">
-                            <span>Pas Foto</span>
-                            <span>3 x 4</span>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-                        <div style="text-align: center; width: 220px;">
-                            <div>Purbalingga, <span class="kartu-date-stamp">14 Oktober 2026</span></div>
-                            <div style="font-weight: bold; margin-top: 2px;">Petugas Pendaftaran</div>
-                            <div style="height: 45px;"></div>
-                            <div>( ......................................... )</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+              </div>
+<div class="kartu-catatan">*) Coret salah satu</div>
+            </section>
+          </div>
         </div>
 
         <!-- TEMPLATE 2: FORMULIR PENDAFTARAN FORMAL LENGKAP -->
@@ -1555,7 +1519,7 @@ function doPost(e) {
             tempContainer.style.position = 'fixed';
             tempContainer.style.left = '0'; 
             tempContainer.style.top = '0'; 
-            tempContainer.style.width = '794px'; // Precision A4 width @ 96DPI
+            tempContainer.style.width = '1123px'; // A4 landscape width at 96 DPI
             tempContainer.style.backgroundColor = '#ffffff';
             tempContainer.style.zIndex = '-99999';
             tempContainer.style.opacity = '1';
@@ -1563,7 +1527,10 @@ function doPost(e) {
             const clone = element.cloneNode(true);
             clone.style.display = 'block';
             clone.style.visibility = 'visible';
-            clone.style.margin = '0 auto';
+            clone.style.margin = '0';
+            clone.style.width = '1123px';
+            clone.style.height = '760px';
+            clone.style.minHeight = '0';
             
             tempContainer.appendChild(clone);
             document.body.appendChild(tempContainer);
@@ -1571,7 +1538,7 @@ function doPost(e) {
             const safeFileName = `Kartu_Pendaftaran_${data.noReg || 'REG'}_${(data.field_1_nama || 'siswa').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
             const opt = {
-                margin:       [8, 8, 8, 8],
+                margin:       0,
                 filename:     safeFileName,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
@@ -1583,9 +1550,12 @@ function doPost(e) {
                     scrollY: 0,
                     x: 0,
                     y: 0,
-                    windowWidth: 794
+                    windowWidth: 1123,
+                    width: 1123,
+                    backgroundColor: '#ffffff'
                 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             setTimeout(() => {
