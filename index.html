@@ -935,6 +935,11 @@ function doPost(e) {
                     <span>Cetak / Download Kartu Pendaftaran PDF</span>
                 </button>
 
+                <button id="btn-download-pernyataan-modal" onclick="downloadSuratPernyataanDaftarUlang()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-2 transition">
+                    <i class="fas fa-file-signature text-sm"></i>
+                    <span>Download Surat Pernyataan Daftar Ulang (A4)</span>
+                </button>
+
                 <button id="btn-download-pdf-modal" onclick="downloadGeneratedPDF()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-2 transition">
                     <i class="fas fa-file-pdf text-sm"></i>
                     <span>Download Formulir Lengkap PDF</span>
@@ -1072,8 +1077,8 @@ function doPost(e) {
         <div style="text-align: center; flex: 1;">
             <div style="font-size: 11pt; font-weight: bold; color: #000000; text-transform: uppercase;">YAYASAN PENDIDIKAN TEKNOLOGI (YPT) PURBALINGGA</div>
             <div style="font-size: 15pt; font-weight: 900; color: #000000; text-transform: uppercase; margin: 1px 0;">SMK YPT 2 PURBALINGGA</div>
-            <div style="font-size: 7.5pt; color: #333;">Jl Mayor jendral Sungkono Kilometer 03 Telepon / Fax. (0281) 892407</div>
-            <div style="font-size: 7.5pt; color: #333;">Website: www.smkypt2purbalingga.sch.id | e-mail: smk_ypt2_pbg@yahoo.co.id</div>
+            <div style="font-size: 8.5pt; color: #333;">Jl Mayor jendral Sungkono Kilometer 03 Telepon / Fax. (0281) 892407</div>
+            <div style="font-size: 8.5pt; color: #333;">Website: www.smkypt2purbalingga.sch.id | e-mail: smk_ypt2_pbg@yahoo.co.id</div>
             <div style="font-size: 9pt; font-weight: bold; color: #000000; text-transform: uppercase;">PURBALINGGA 53371</div>
         </div>
 
@@ -1555,7 +1560,7 @@ function doPost(e) {
                     backgroundColor: '#ffffff'
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                pagebreak: { mode: [] }
             };
 
             setTimeout(() => {
@@ -1703,6 +1708,129 @@ function doPost(e) {
             }, 250);
         }
         
+
+        // SURAT PERNYATAAN DAFTAR ULANG — A4 PORTRAIT
+        // Data diambil dari objek pendaftar yang sama, termasuk nomor registrasi sistem.
+        function downloadSuratPernyataanDaftarUlang(studentData = null) {
+            const data = studentData || currentStudentData;
+            if (!data) {
+                showToast('Data pendaftar tidak ditemukan. Pilih data dari database atau kirim formulir terlebih dahulu.', 'warning');
+                return;
+            }
+            if (!data.noReg) {
+                showToast('Nomor registrasi tidak ditemukan. Surat tidak dapat dibuat.', 'warning');
+                return;
+            }
+
+            const safe = value => String(value ?? '-').replace(/[&<>"']/g, ch => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+            }[ch]));
+            const alamat = [
+                data.field_5_rt || data.field_5_rtrw ? `RT ${data.field_5_rt || '-'} / RW ${data.field_5_rw || '-'}` : '',
+                data.field_5_desa ? `Desa/Kel. ${data.field_5_desa}` : '',
+                data.field_5_kecamatan ? `Kec. ${data.field_5_kecamatan}` : '',
+                data.field_5_kota || '',
+                data.field_5_provinsi || ''
+            ].filter(Boolean).join(', ') || '-';
+            const jurusan = `${data.field_19_jurusan || '-'}${programKeahlianMap[data.field_19_jurusan] ? ' — ' + programKeahlianMap[data.field_19_jurusan] : ''}`;
+            // Nama orang tua/wali sengaja dikosongkan agar dapat diisi manual setelah dicetak.
+            const garisNamaOrtu = '........................................................';
+            const tanggal = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+
+            const printable = document.createElement('div');
+            printable.id = 'surat-pernyataan-pdf-render';
+            printable.style.cssText = 'width:794px;height:1120px;min-height:1120px;max-height:1120px;padding:26px 71px 24px;margin:0;box-sizing:border-box;overflow:hidden;background:#fff;color:#000;font-family:"Times New Roman",serif;font-size:11pt;line-height:1.16;';
+            printable.innerHTML = `
+              <style>
+                #surat-pernyataan-pdf-render *{box-sizing:border-box}
+                #surat-pernyataan-pdf-render .judul{text-align:center;font-weight:bold;line-height:1.25}
+                #surat-pernyataan-pdf-render .baris{display:grid;grid-template-columns:190px 10px minmax(0,1fr);gap:2px;margin:2px 0}
+                #surat-pernyataan-pdf-render .isi{overflow-wrap:anywhere}
+                #surat-pernyataan-pdf-render .pasal{margin:1px 0 2px 18px;text-indent:-16px;text-align:justify}
+              </style>
+              <div style="display:grid;grid-template-columns:66px minmax(0,1fr);align-items:center;column-gap:10px;padding-bottom:6px;border-bottom:3px double #000;margin-bottom:8px">
+                <div style="width:62px;height:62px;display:flex;align-items:center;justify-content:center">
+                  <img src="logoypt2.png" alt="Logo SMK YPT 2 Purbalingga" style="width:60px;height:60px;object-fit:contain" crossorigin="anonymous" onerror="this.style.display='none'">
+                </div>
+                <div class="judul" style="text-align:center;padding-right:8px">
+                  <div style="font-size: 11pt; font-weight: bold; color: #000000; text-transform: uppercase;">YAYASAN PENDIDIKAN TEKNOLOGI (YPT) PURBALINGGA</div>
+            <div style="font-size: 15pt; font-weight: 900; color: #000000; text-transform: uppercase; margin: 1px 0;">SMK YPT 2 PURBALINGGA</div>
+            <div style="font-size: 7.5pt; color: #333;">Jl Mayor jendral Sungkono Kilometer 03 Telepon / Fax. (0281) 892407</div>
+            <div style="font-size: 7.5pt; color: #333;">Website: www.smkypt2purbalingga.sch.id | e-mail: smk_ypt2_pbg@yahoo.co.id</div>
+            <div style="font-size: 9pt; font-weight: bold; color: #000000; text-transform: uppercase;">PURBALINGGA 53371</div>
+
+                </div>
+              </div>
+              <div class="judul" style="font-size:12pt;margin-bottom:8px;text-decoration:underline">SURAT PERNYATAAN DAFTAR ULANG</div>
+              <div style="margin-bottom:8px">Yang bertanda tangan di bawah ini:</div>
+              <div style="font-weight:bold;margin-bottom:3px">I. ORANG TUA / WALI CALON SISWA</div>
+              <div class="baris"><div>Nama Lengkap</div><div>:</div><div class="isi">${garisNamaOrtu}</div></div>
+              <div class="baris"><div>Alamat Lengkap</div><div>:</div><div class="isi">${safe(alamat)}</div></div>
+              <div class="baris"><div>No. HP / WhatsApp</div><div>:</div><div class="isi">${safe(data.field_30_hp_ortu || '-')}</div></div>
+              <div class="baris"><div>Hubungan dengan Calon Siswa</div><div>:</div><div class="isi">Orang Tua (Ayah / Ibu) / Wali * )</div></div>
+              <div style="font-weight:bold;margin:6px 0 3px">II. CALON SISWA</div>
+              <div class="baris"><div>Nama Lengkap</div><div>:</div><div class="isi">${safe(data.field_1_nama)}</div></div>
+              <div class="baris"><div>Asal Sekolah (SMP/MTs)</div><div>:</div><div class="isi">${safe(data.field_16_asal_sekolah)}</div></div>
+              <div class="baris"><div>Program/Konsentrasi Keahlian</div><div>:</div><div class="isi">${safe(jurusan)}</div></div>
+              <div class="baris"><div>No. Pendaftaran SPMB</div><div>:</div><div class="isi" style="font-weight:bold">${safe(data.noReg)}</div></div>
+              <div style="margin-top:6px;margin-bottom:3px;text-align:justify">Dengan ini menyatakan dengan sungguh-sungguh dan penuh kesadaran bahwa:</div>
+              <div class="pasal">1. Calon siswa telah secara resmi dinyatakan diterima dan melakukan daftar ulang sebagai siswa baru di SMK YPT 2 Purbalingga.</div>
+              <div class="pasal">2. Kami telah memahami dan menyetujui seluruh ketentuan serta rincian biaya administrasi daftar ulang yang ditetapkan oleh panitia SPMB SMK YPT 2 Purbalingga.</div>
+              <div class="pasal">3. Apabila di kemudian hari calon siswa mengundurkan diri atau tidak jadi masuk/bersekolah di SMK YPT 2 Purbalingga dengan alasan apa pun, maka seluruh dana/uang daftar ulang yang telah dibayarkan <b>TIDAK DAPAT DITARIK KEMBALI / HANGUS.</b></div>
+              <div class="pasal">4. Surat pernyataan ini dibuat atas kesadaran sendiri tanpa ada unsur paksaan, tekanan, atau intimidasi dari pihak mana pun.</div>
+              <div style="margin-top:3px;text-align:justify">Demikian Surat Pernyataan ini kami buat dan tanda tangani bersama untuk dipergunakan sebagaimana mestinya.</div>
+              <div style="text-align:right;margin-top:6px;margin-bottom:4px">Purbalingga, .................................... 20...</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:center">
+                <div>
+                  <div>Mengetahui / Menyetujui,</div><div>Orang Tua / Wali Calon Siswa</div>
+                  <div style="height:8px"></div>
+                  <div style="border:1px solid #777;width:66px;height:36px;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:10pt">Materai<br>Rp10.000</div>
+                  <div style="margin-top:5px">(${garisNamaOrtu})</div>
+                </div>
+                <div>
+                  <div>Yang Membuat Pernyataan,</div><div>Calon Siswa</div>
+                  <div style="height:42px"></div>
+                  <div>(${safe(data.field_1_nama)})</div>
+                </div>
+              </div>
+              <div style="font-size:9pt;margin-top:6px">Catatan: *) Coret yang tidak perlu.</div>
+              <div style="font-size:9pt">Tanda tangan Orang Tua/Wali wajib menimpa sebagian kertas dan sebagian materai Rp10.000.</div>
+            `;
+
+            const btn = document.getElementById('btn-download-pernyataan-modal');
+            const originalHtml = btn ? btn.innerHTML : '';
+            if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Membuat Surat PDF...'; btn.disabled = true; }
+            const container = document.createElement('div');
+            container.style.cssText = 'position:absolute;left:0;top:0;width:794px;height:1060px;overflow:hidden;background:#fff;z-index:-1;opacity:0;pointer-events:none;';
+            container.appendChild(printable);
+            document.body.appendChild(container);
+            const fileName = `Surat_Pernyataan_Daftar_Ulang_${String(data.noReg).replace(/[^a-zA-Z0-9-]/g,'_')}.pdf`;
+            const options = {
+                margin: 0,
+                filename: fileName,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794, windowHeight: 1120, scrollX: 0, scrollY: 0, x: 0, y: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: [] }
+            };
+            if (typeof html2pdf === 'undefined') {
+                document.body.removeChild(container);
+                if (btn) { btn.innerHTML = originalHtml; btn.disabled = false; }
+                showToast('Pustaka PDF belum termuat. Periksa koneksi internet lalu coba lagi.', 'warning');
+                return;
+            }
+            html2pdf().set(options).from(printable).save().then(() => {
+                if (document.body.contains(container)) document.body.removeChild(container);
+                if (btn) { btn.innerHTML = originalHtml; btn.disabled = false; }
+                showToast('Surat Pernyataan Daftar Ulang berhasil diunduh.');
+            }).catch(err => {
+                console.error('Gagal membuat Surat Pernyataan:', err);
+                if (document.body.contains(container)) document.body.removeChild(container);
+                if (btn) { btn.innerHTML = originalHtml; btn.disabled = false; }
+                showToast('PDF gagal dibuat. Silakan coba kembali.', 'warning');
+            });
+        }
+
         function cleanUpPDF(container, btnElement, originalHtml) {
             if (container && document.body.contains(container)) {
                 document.body.removeChild(container);
@@ -1767,6 +1895,9 @@ function doPost(e) {
                             <div class="flex items-center justify-center space-x-1">
                                 <button onclick='downloadKartuPendaftaranPDF(${itemJson})' title="Cetak Kartu Pendaftaran PDF" class="p-1.5 text-ypt-blue hover:bg-blue-50 rounded">
                                     <i class="fas fa-id-card"></i>
+                                </button>
+                                <button onclick='downloadSuratPernyataanDaftarUlang(${itemJson})' title="Download Surat Pernyataan Daftar Ulang A4" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded">
+                                    <i class="fas fa-file-signature"></i>
                                 </button>
                                 <button onclick='downloadGeneratedPDF(${itemJson})' title="Download Formulir Lengkap" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded">
                                     <i class="fas fa-file-pdf"></i>
